@@ -1,0 +1,29 @@
+<html>
+<head>
+<style type="text/css">
+@import "jquery/jquery.svg.css";
+</style> 
+
+<style type="text/css">
+#svgview {
+    width: 400px;
+    height: 200px;
+    border: 1px solid #CCCCCC;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: inline;
+}
+</style> 
+<script type="text/javascript" src="jquery/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="jquery/jquery.svg.js" />
+</head>
+<body>
+<div id="svgview"/>
+<script>
+$(function() {
+$('#svgview').svg({onLoad: function(svg) {
+    svg.circle(null, 100, 100, 50, {fill: 'none', stroke: 'red', 'stroke-width': 5});
+}});
+});
+</script>
+</html>
