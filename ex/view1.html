@@ -1,29 +1,45 @@
 <html>
 <head>
 <style type="text/css">
-@import "jquery/jquery.svg.css";
-</style> 
+@import "jquery.svg.css";
 
-<style type="text/css">
-#svgview {
-    width: 400px;
-    height: 200px;
-    border: 1px solid #CCCCCC;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    display: inline;
-}
-</style> 
-<script type="text/javascript" src="jquery/jquery-1.7.1.js"></script>
-<script type="text/javascript" src="jquery/jquery.svg.js" />
+#svgview { width: 400px; height: 300px; border: 1px solid #484; }
+</style>
+<script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="jquery/jquery.svg.js"></script>
 </head>
 <body>
-<div id="svgview"/>
+<h1>test</h1>
+<div id="svgview"></div>
 <script>
-$(function() {
-$('#svgview').svg({onLoad: function(svg) {
-    svg.circle(null, 100, 100, 50, {fill: 'none', stroke: 'red', 'stroke-width': 5});
-}});
+window.SO_VIEW = 'view1';
+
+function log(msg) {
+    $('#log').append(msg + "\n");
+}
+
+$(document).ready(function(){
+    $('#svgview').svg();
+    var svg = $('#svgview').svg('get');
+
+    log('Loading ' + window.SO_VIEW + '.svg...');
+    svg.load(window.SO_VIEW + '.svg', false, {changeSize: true, onLoad: loadViewDone});
+loadViewDone(svg, false);
 });
+
+function loadViewDone(svg, error) {
+    if(error) {
+	log('Failed: ' + error);
+	svg.text(10, 20, error, {fill: 'red'});
+	return;
+    }
+
+    log('Searching rect[id^="so_"]...');
+    $('rect[id^="so_"]', svg.root()).each(function(){
+	log("found: " + this.id);
+	this.clear(true);
+    });
+}
 </script>
+<textarea rows="100" cols="100" id="log"></textarea>
 </html>
