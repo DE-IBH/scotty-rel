@@ -3,13 +3,12 @@
 <style type="text/css">
 @import "jquery.svg.css";
 
-#svgview { width: 400px; height: 300px; border: 1px solid #484; }
+#svgview { width: 100%; height: 90%; border: 1px solid #484; }
 </style>
 <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="jquery/jquery.svg.js"></script>
 </head>
 <body>
-<h1>test</h1>
 <div id="svgview"></div>
 <script>
 window.SO_VIEW = 'view1';
@@ -41,5 +40,5 @@ function loadViewDone(svg, error) {
     });
 }
 </script>
-<textarea rows="100" cols="100" id="log"></textarea>
+<div><textarea style="width: 100%, height: 20%" cols="200" rows="4" id="log"></textarea></div>
 </html>
