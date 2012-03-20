@@ -1,0 +1,7 @@
+Installation
+============
+
+Required packages:
+ fping
+ Net::SNMP
+ Mojolicious
