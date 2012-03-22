@@ -25,7 +25,6 @@
 package Scotty::Config;
 
 use XML::LibXML;
-use Scotty::Client::Generic;
 use Scotty::Host::Generic;
 use strict;
 
