@@ -2,7 +2,7 @@
 
 XSLDIR=${2:-/usr/share/scotty-rel/xsl}
 CFGDIR=${1:-/etc/scotty-rel}
-WWWDIR=${2:-/var/www/scotty-rel}
+WWWDIR=${3:-/var/www/scotty-rel}
 VIEWSDIR="$WWWDIR/views"
 
 function err {
