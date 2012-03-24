@@ -10,8 +10,11 @@
 <body>
 <div class="tabs">
     <ul class="nav">
-	<li><a href="#view1"><span>View #1</span></a></li>
-	<li><a href="#view2"><span>View #2</span></a></li>
+{
+    foreach my $id (sort keys %views) {
+	$OUT .= "<li><a href=\"#$id\"><span>$views{$id}</span></a></li>\n";
+    }
+}
     </ul>
 {
     foreach my $id (sort keys %views) {
