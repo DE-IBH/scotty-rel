@@ -5,3 +5,4 @@ Required packages:
  fping
  Net::SNMP
  Mojolicious
+ Text::Template
