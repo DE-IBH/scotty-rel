@@ -41,17 +41,16 @@ License:
 		<xsl:attribute name="name"><xsl:value-of select="$hostname"/></xsl:attribute>
 		<xsl:for-each select="//*[substring-before(substring(@id, 4), '_') = $hostname]">
 		    <xsl:variable name="service" select="substring-after(substring(@id, 4), '_')"/>
-		    <service>
-			<xsl:choose>
-			    <xsl:when test="contains($service, '_')">
-				<xsl:attribute name="name"><xsl:value-of select="substring-before($service, '_')"/></xsl:attribute>
-				<xsl:attribute name="name"><xsl:value-of select="substring-after($service, '_')"/></xsl:attribute>
-			    </xsl:when>
-			    <xsl:otherwise>
-				<xsl:attribute name="name"><xsl:value-of select="$service"/></xsl:attribute>
-			    </xsl:otherwise>
-			</xsl:choose>
-		    </service>
+		    <xsl:choose>
+			<xsl:when test="contains($service, '_')">
+			    <xsl:element name="{concat('service-', substring-before($service, '_'))}">
+				<xsl:attribute name="params"><xsl:value-of select="substring-after($service, '_')"/></xsl:attribute>
+			    </xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+			    <xsl:element name="{concat('service-', $service)}"/>
+			</xsl:otherwise>
+		    </xsl:choose>
 		</xsl:for-each>
 	    </host>
 	</xsl:for-each>
