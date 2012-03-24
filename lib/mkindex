@@ -45,7 +45,12 @@ foreach my $view (<$viewdir/*.svg>) {
     $views{$id} = $bn;
 }
 
-my $res = $t->fill_in(HASH => {views => \%views});
+open(HOUT, '>', $output) || die "Failed opening output file '$output': $!\n";
+my $res = $t->fill_in(
+    OUTPUT => \*HOUT,
+    HASH => {views => \%views},
+);
+close(HOUT);
 
 die "Couldn't fill in template: $Text::Template::ERROR\n" unless (defined($res));
 
