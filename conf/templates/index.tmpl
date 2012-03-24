@@ -26,9 +26,11 @@
 <script type="text/javascript" src="res/index.js"></script>
 <script type="text/javascript">
 {
+    my $first = 0;
     foreach my $id (sort keys %views) {
+	$OUT .= "window.CURRENT_VIEW = \"$id\";\n" unless($first++);
+
 	my $view = $views{$id};
-	
 	$OUT .= "\$('#$id').svg(\{loadURL: 'views/$view', onLoad: loadViewDone\});\n";
     }
 }

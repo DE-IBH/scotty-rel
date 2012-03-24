@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. ${1:-/etc/scotty-rel/paths.conf}
+
+"$LIBDIR/mkindex" "$TPLDIR" "$WWWDIR/index.html" "$VIEWSDIR"

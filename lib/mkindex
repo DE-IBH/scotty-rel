@@ -53,5 +53,3 @@ my $res = $t->fill_in(
 close(HOUT);
 
 die "Couldn't fill in template: $Text::Template::ERROR\n" unless (defined($res));
-
-print $res;
