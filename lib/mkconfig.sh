@@ -16,7 +16,7 @@ for fn in "$VIEWSDIR/"*.svg; do
     if [ ! -e "$fn" ]; then
 	rm "$SRVFN"
 	rm "$V2SFN"
-	err no view found "($VIEWSDIR/*.svg)"
+	err no views found "($VIEWSDIR/*.svg)"
     fi
 
     xsltproc -o "$V2SFN" "$XSLDIR/view2services.xsl" "$fn" || err xsltproc processing failed on $fn
