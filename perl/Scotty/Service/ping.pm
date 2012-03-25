@@ -24,18 +24,22 @@
 
 package Scotty::Service::ping;
 
-use Scotty::Service::Generic;
+use Scotty::Service;
 use strict;
-our @ISA = qw(Scotty::Service::Generic);
+our @ISA = qw(Scotty::Service);
+my %hosts;
 
 sub new {
     my ($class) = @_;
-    my $self = Scotty::Host::Generic->new($class);
+    my $self = Scotty::Service->new($class);
 
     return $self;
 }
 
-sub add {
+sub register {
+    my ($self, $host, $params) = @_;
+
+    $hosts{$host} = $params;
 }
 
 1;

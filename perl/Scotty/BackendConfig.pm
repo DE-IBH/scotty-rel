@@ -25,7 +25,7 @@
 package Scotty::BackendConfig;
 
 use XML::LibXML;
-use Scotty::Host::Generic;
+use Scotty::Service;
 use strict;
 
 sub parse_config() {
@@ -50,11 +50,7 @@ sub parse_services() {
 		my $service = lc($nctx->findvalue("\@name"));
 		my $params = $nctx->findvalue("\@params");
 
-		eval("require Scotty::Service::$service;");
-		die($@) if $@;
-
-		eval("Scotty::Service::${service}::add(qq($host), qq($params));");
-		die($@) if $@;
+		Scotty::Service::add($service, $host, $params);
 	}
 }
 

@@ -22,9 +22,11 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-package Scotty::Service::Generic;
+package Scotty::Service;
 
 use strict;
+
+my %services;
 
 sub new {
     my ($class, $oclass) = @_;
@@ -35,6 +37,26 @@ sub new {
 
     bless $self, $class;
     return $self;
+}
+
+sub add {
+    my $service = shift(@_);
+
+    unless(exists($services{$service})) {
+	eval("require Scotty::Service::$service;");
+	die($@) if $@;
+
+	eval("\$services{\$service} = new Scotty::Service::${service}();");
+	die($@) if $@;
+    }
+
+    $services{$service}->register(@_);
+}
+
+sub register {
+    my ($self) = @_;
+
+    warn(${$self}{_class} . " did not override register method!\n");
 }
 
 1;
