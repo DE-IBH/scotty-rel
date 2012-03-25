@@ -22,40 +22,20 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-package Scotty::BackendConfig;
+package Scotty::Service::ping;
 
-use XML::LibXML;
-use Scotty::Host::Generic;
+use Scotty::Service::Generic;
 use strict;
+our @ISA = qw(Scotty::Service::Generic);
 
-sub parse_config() {
-	my ($xml_cfgfile) = @_;
-	die "Usage: $0 <views.xml>\n" unless (defined($xml_cfgfile));
-	die "Could not read views XML file!\n" unless (-r $xml_cfgfile);
+sub new {
+    my ($class) = @_;
+    my $self = Scotty::Host::Generic->new($class);
 
-	my $xml_parser = XML::LibXML->new();
-	my $xml_dom = $xml_parser->parse_file($xml_cfgfile);
-
-	&parse_services($xml_dom, '//service');
+    return $self;
 }
 
-sub parse_services() {
-	my ($ctx, $xpath) = @_;
-
-	my $res = $ctx->findnodes($xpath);
-	die "config file: empty XPath node list: $xpath\n" unless ($res->isa('XML::LibXML::NodeList'));
-
-	foreach my $nctx ($res->get_nodelist) {
-		my $host = $nctx->findvalue("../\@name");
-		my $service = lc($nctx->findvalue("\@name"));
-		my $params = $nctx->findvalue("\@params");
-
-		eval("require Scotty::Service::$service;");
-		die($@) if $@;
-
-		eval("Scotty::Service::${service}::add(qq($host), qq($params));");
-		die($@) if $@;
-	}
+sub add {
 }
 
 1;
