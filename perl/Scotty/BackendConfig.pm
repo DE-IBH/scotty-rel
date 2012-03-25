@@ -22,7 +22,7 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-package Scotty::Config;
+package Scotty::BackendConfig;
 
 use XML::LibXML;
 use Scotty::Host::Generic;
@@ -30,42 +30,30 @@ use strict;
 
 sub parse_config() {
 	my ($xml_cfgfile) = @_;
-	die "Usage: $0 <config.xml>\n" unless (defined($xml_cfgfile));
-	die "Could not read config file!\n" unless (-r $xml_cfgfile);
+	die "Usage: $0 <views.xml>\n" unless (defined($xml_cfgfile));
+	die "Could not read views XML file!\n" unless (-r $xml_cfgfile);
 
 	my $xml_parser = XML::LibXML->new();
 	my $xml_dom = $xml_parser->parse_file($xml_cfgfile);
 
-	&parse_settings($xml_dom, '/scotty/settings/*');
-	die "no secret set, aborting\n" unless(defined($main::config{'secret'}) && $main::config{'secret'} ne '');
-
-	&parse_hosts($xml_dom, '/scotty/hosts/use');
+	&parse_services($xml_dom, '//service');
 }
 
-sub parse_settings() {
+sub parse_services() {
 	my ($ctx, $xpath) = @_;
 
 	my $res = $ctx->findnodes($xpath);
 	die "config file: empty XPath node list: $xpath\n" unless ($res->isa('XML::LibXML::NodeList'));
 
 	foreach my $nctx ($res->get_nodelist) {
-		$main::config{$nctx->localname} = $nctx->textContent;
-	}
-}
-
-sub parse_hosts() {
-	my ($ctx, $xpath) = @_;
-
-	my $res = $ctx->findnodes($xpath);
-	die "config file: empty XPath node list: $xpath\n" unless ($res->isa('XML::LibXML::NodeList'));
-
-	foreach my $nctx ($res->get_nodelist) {
-		my $pkg = $nctx->findvalue("\@name");
+		my $host = $nctx->findvalue("../\@name");
+		my $service = lc($nctx->findvalue("\@name"));
+		my $params = $nctx->findvalue("\@params");
 		
-		eval("require $pkg;");
+		eval("require Scotty::Service::$service;");
 		die($@) if $@;
 
-		eval("push(\@main::hosts, new $pkg(\$nctx));");
+		eval("Scotty::Service::$service($host, $params);");
 		die($@) if $@;
 	}
 }

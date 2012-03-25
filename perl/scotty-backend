@@ -24,7 +24,7 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-use Scotty::Config;
+use Scotty::BackendConfig;
 use Event;
 use strict;
 use warnings;
@@ -78,7 +78,7 @@ else  {
   require Scotty::POSIX;
 }
 
-&Scotty::Config::parse_config(shift);
+&Scotty::BackendConfig::parse_config(shift);
 
 $main::logger->info("enter event loop");
 
