@@ -2,4 +2,5 @@
 
 . ${1:-/etc/scotty-rel/paths.conf}
 
+"$LIBDIR/mkviews"
 "$LIBDIR/mkindex" "$TPLDIR" "$WWWDIR/index.html" "$VIEWSDIR"

@@ -29,11 +29,13 @@ License:
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
   <xsl:output method="xml" indent="yes"/>
+  <xsl:param name="view"/>
 
   <xsl:key name="hosts" match="*[starts-with(@id, 'so_')]" use="substring-before(substring(@id, 4), '_')" />
 
   <xsl:template match="/">
-    <services>
+    <view>
+	<xsl:attribute name="name"><xsl:value-of select="$view"/></xsl:attribute>
 	<xsl:for-each select="//*[generate-id(.)=generate-id(key('hosts', substring-before(substring(@id, 4), '_'))[1])]">
 	    <xsl:sort select="substring-before(substring(@id, 4), '_')" />
 	    <xsl:variable name="hostname" select="substring-before(substring(@id, 4), '_')"/>
@@ -54,6 +56,6 @@ License:
 		</xsl:for-each>
 	    </host>
 	</xsl:for-each>
-    </services>
+    </view>
   </xsl:template>
 </xsl:stylesheet>

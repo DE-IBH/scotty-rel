@@ -1,9 +1,6 @@
 #!/bin/bash
 
-XSLDIR=${2:-/usr/share/scotty-rel/xsl}
-CFGDIR=${1:-/etc/scotty-rel}
-WWWDIR=${3:-/var/www/scotty-rel}
-VIEWSDIR="$WWWDIR/views"
+. ${1:-/etc/scotty-rel/paths.conf}
 
 function err {
     logger -s -t scotty-rel -- "Configuration error: $@"
@@ -12,6 +9,7 @@ function err {
 
 SRVFN=`tempfile -p srv -s xml`
 V2SFN=`tempfile -p v2s -s xml`
+echo '<views>' > "$SRVFN"
 for fn in "$VIEWSDIR/"*.svg; do
     if [ ! -e "$fn" ]; then
 	rm "$SRVFN"
@@ -19,11 +17,11 @@ for fn in "$VIEWSDIR/"*.svg; do
 	err no views found "($VIEWSDIR/*.svg)"
     fi
 
-    xsltproc -o "$V2SFN" "$XSLDIR/view2services.xsl" "$fn" || err xsltproc processing failed on $fn
+    view=`basename "$fn"`
+    xsltproc -stringparam view "${view:0:-4}" -o "$V2SFN" "$XSLDIR/view2services.xsl" "$fn" || err xsltproc processing failed on $fn
     tail -n +2 "$V2SFN" >> "$SRVFN"
 done
 rm "$V2SFN"
+echo '</views>' >> "$SRVFN"
 
-cat "$SRVFN"
-
-rm "$SRVFN"
+mv "$SRVFN" "$CFGDIR/views.xml" || err could not create views configuration
