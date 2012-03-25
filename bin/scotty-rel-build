@@ -1,6 +1,14 @@
 #!/bin/bash
 
-. ${1:-/etc/scotty-rel/paths.conf}
+paths=${1:-/etc/scotty-rel/paths.conf}
+. "$paths"
 
-"$LIBDIR/mkviews"
-"$LIBDIR/mkindex" "$TPLDIR" "$WWWDIR/index.html" "$VIEWSDIR"
+echo "Creating views.xml..."
+"$LIBDIR/mkservices" "$paths"
+
+echo "Creating HTML files..."
+for tpl in $TPLDIR/*.tpl; do
+    html=`basename "${tpl:0:-3}html"`
+    echo " $html"
+    "$LIBDIR/mkindex" "$tpl" "$WWWDIR/$html" "$VIEWSDIR"
+done

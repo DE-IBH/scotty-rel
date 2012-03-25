@@ -8,6 +8,7 @@
 <script type="text/javascript" src="jquery/jquery.svg.js"></script>
 </head>
 <body>
+<div style="float: right"><small><a href="https://github.com/liske/scotty-rel/" target="_blank" style="text-decoration: none">Scotty RELOADED</a></small></div>
 <div class="tabs">
     <ul class="nav">
 {
