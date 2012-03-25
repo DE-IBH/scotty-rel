@@ -53,7 +53,7 @@ sub parse_services() {
 		eval("require Scotty::Service::$service;");
 		die($@) if $@;
 
-		eval("Scotty::Service::$service($host, $params);");
+		eval("Scotty::Service::$service::add($host, $params);");
 		die($@) if $@;
 	}
 }
