@@ -1,4 +1,4 @@
-# scotty-rel - Scotty REVOLUTION Network Management Tool
+# scotty-rel - Scotty RELOADED Network Management Tool
 #
 # Authors:
 #   Thomas Liske <thomas@fiasko-nw.net>

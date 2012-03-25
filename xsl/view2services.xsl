@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-scotty-rel - Scotty REVOLUTION Network Management Tool
+scotty-rel - Scotty RELOADED Network Management Tool
 
 Authors:
   Thomas Liske <thomas@fiasko-nw.net>

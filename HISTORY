@@ -1,4 +1,4 @@
-The Scotty REVOLUTION Network Management Tool is a complete rewrite of
+The Scotty RELOADED Network Management Tool is a complete rewrite of
 the ancient Scotty and Tkined Network Management Tools.
 
 The Scotty and Tkined Network Management Tools were developed by
@@ -12,7 +12,7 @@ design using Ruby Tuble Spaces, Linux/Win32 GUI clients, ...) it had
 some performance/bandwidth issues and no designer gui.
 
 In the meantime, due the development of websockets and other advanced web
-techniques Scotty REVOLUTION is born - another complete rewrite in Perl
+techniques Scotty RELOADED is born - another complete rewrite in Perl
 using a 3 Tier design and advanced web techniques.
 
 
