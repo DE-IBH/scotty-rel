@@ -7,6 +7,9 @@ $(function () {
         $('div.tabs ul.tabNavigation a').removeClass('selected');
         $(this).addClass('selected');
 
+        window.CURRENT_VIEW = this.hash;
+        log('Viewing '  + this.hash.substr(1) + '...');
+
         return false;
     }).filter(':first').click();
 });
