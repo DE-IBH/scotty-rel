@@ -45,4 +45,14 @@ sub register {
     $main::logger->info("register: $host");
 }
 
+sub worker {
+    my ($self) = @_;
+
+    my $wh = $self->SUPER::worker();
+
+    if(defined($wh)) {
+	$main::logger->info("rtt worker...");
+    }
+}
+
 1;

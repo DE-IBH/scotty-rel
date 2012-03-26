@@ -79,6 +79,7 @@ else  {
 }
 
 &Scotty::BackendConfig::parse_config(shift);
+&Scotty::Service::start_worker();
 
 $main::logger->info("enter event loop");
 

@@ -27,6 +27,7 @@ package Scotty::Service;
 use strict;
 
 my %services;
+my %pipes;
 
 sub new {
     my ($class, $oclass) = @_;
@@ -57,6 +58,28 @@ sub register {
     my ($self) = @_;
 
     warn(${$self}{_class} . " did not override register method!\n");
+}
+
+sub start_worker() {
+    $main::logger->info("Forking working processes...");
+    foreach my $service (keys %services) {
+	$services{$service}->worker();
+    }
+}
+
+sub worker() {
+    my ($self) = @_;
+
+    pipe RH, WH;
+    my $pid = fork();
+    die "Cannot fork!\n" unless(defined($pid));
+    if($pid == 0) {
+	close(RH);
+	return *WH;
+    }
+    close(WH);
+
+    return undef;
 }
 
 1;
