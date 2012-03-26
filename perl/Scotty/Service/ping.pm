@@ -33,6 +33,7 @@ sub new {
     my ($class) = @_;
     my $self = Scotty::Service->new($class);
 
+    bless $self, $class;
     return $self;
 }
 
@@ -40,6 +41,8 @@ sub register {
     my ($self, $host, $params) = @_;
 
     $hosts{$host} = $params;
+
+    $main::logger->info("register: $host");
 }
 
 1;

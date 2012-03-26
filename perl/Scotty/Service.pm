@@ -46,7 +46,7 @@ sub add {
 	eval("require Scotty::Service::$service;");
 	die($@) if $@;
 
-	eval("\$services{\$service} = new Scotty::Service::${service}();");
+	eval("\$services{\$service} = Scotty::Service::${service}->new();");
 	die($@) if $@;
     }
 
