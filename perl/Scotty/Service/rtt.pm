@@ -22,7 +22,7 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-package Scotty::Service::ping;
+package Scotty::Service::rtt;
 
 use Scotty::Service;
 use strict;
