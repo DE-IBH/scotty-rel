@@ -29,6 +29,7 @@ use Proc::Daemon;
 use IO::File;
 use POSIX qw(mkfifo);
 use strict;
+use warnings;
 our @ISA = qw(main);
 
 $main::logger = Scotty::Logging::Syslog->new();

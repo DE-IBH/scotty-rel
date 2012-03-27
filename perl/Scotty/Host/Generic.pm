@@ -27,6 +27,7 @@ package Scotty::Host::Generic;
 use XML::LibXML;
 use XML::LibXML::Reader;
 use strict;
+use warnings;
 
 sub new {
     my ($class, $oclass, $ctx) = @_;

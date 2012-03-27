@@ -25,6 +25,7 @@
 package Scotty::Service;
 
 use strict;
+use warnings;
 
 my %services;
 my %pipes;

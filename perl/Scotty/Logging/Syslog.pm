@@ -25,6 +25,7 @@
 use Scotty::Logging;
 package Scotty::Logging::Syslog;
 use strict;
+use warnings;
 use Sys::Syslog;
 our @ISA = qw(Scotty::Logging);
 

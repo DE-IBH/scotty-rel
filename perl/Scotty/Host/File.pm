@@ -26,6 +26,7 @@ package Scotty::Host::File;
 
 use Scotty::Host::Generic;
 use strict;
+use warnings;
 our @ISA = qw(Scotty::Host::Generic);
 
 sub new {

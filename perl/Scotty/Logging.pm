@@ -25,6 +25,7 @@
 package Scotty::Logging;
 
 use strict;
+use warnings;
 
 sub new {
     my ($class) = @_;

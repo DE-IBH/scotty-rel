@@ -26,6 +26,7 @@ package Scotty::Service::rtt;
 
 use Scotty::Service;
 use strict;
+use warnings;
 our @ISA = qw(Scotty::Service);
 my %hosts;
 

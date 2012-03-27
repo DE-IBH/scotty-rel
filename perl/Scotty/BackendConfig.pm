@@ -27,6 +27,7 @@ package Scotty::BackendConfig;
 use XML::LibXML;
 use Scotty::Service;
 use strict;
+use warnings;
 
 sub parse_config() {
 	my ($xml_cfgfile) = @_;
