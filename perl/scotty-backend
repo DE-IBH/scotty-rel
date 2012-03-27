@@ -26,11 +26,18 @@
 
 use Scotty::BackendConfig;
 use Event;
+use Scotty::Logging::Syslog;
+use Proc::Daemon;
+use IO::File;
+use POSIX qw(mkfifo);
 use strict;
 use warnings;
 
 my $mypid = $$;
-my @nodes = qw();
+my @nodes = ();
+
+$main::logger = Scotty::Logging::Syslog->new();
+$main::logger->info("starting...");
 
 sub WARN_handler {
     my($signal) = @_;
@@ -71,11 +78,34 @@ END {
 	}
 }
 
-if ($^O eq "MSWin32") {
-  require Scotty::Win32;
+#Proc::Daemon::Init;
+
+my $FIFO_NAME = "/tmp/scotty-rel";
+my $FIFO_PERM = 0700;
+unless(-e $FIFO_NAME) {
+	unless(mkfifo($FIFO_NAME, $FIFO_PERM)) {
+		$main::logger->warning("mkfifo($FIFO_NAME) failed: $!");
+	}
 }
-else  {
-  require Scotty::POSIX;
+if(-r $FIFO_NAME) {
+	my $fifo;
+	if($fifo = new IO::File($FIFO_NAME, O_RDWR)) {
+		$fifo->blocking(0);
+		Event->io(
+			desc => 'FIFO handler',
+			fd => $fifo,
+			poll => 'r',
+			cb => \&cmd_handler,
+			repeat => '1',
+		);
+
+		$main::logger->info("listening on $FIFO_NAME");
+	}
+	else {
+		$main::logger->warning("open($FIFO_NAME) failed: $!");
+	}
+} else {
+	$main::logger->warning("$FIFO_NAME not readable - ignoring");
 }
 
 &Scotty::BackendConfig::parse_config(shift);
