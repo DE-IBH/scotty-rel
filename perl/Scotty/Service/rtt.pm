@@ -27,8 +27,12 @@ package Scotty::Service::rtt;
 use Scotty::Service;
 use strict;
 use warnings;
+use IPC::Open3;
+use Symbol 'gensym';
 our @ISA = qw(Scotty::Service);
 my %hosts;
+my %loss;
+my %rtt;
 
 sub new {
     my ($class) = @_;
@@ -46,14 +50,48 @@ sub register {
     $main::logger->info("register: $host");
 }
 
+sub fping_handler() {
+    my $event = shift;
+    my $h = $event->w->fd;
+    return if eof($h);
+
+    my $l = <$h>;
+    chomp($l);
+
+    # new period
+    if($l =~ /^\[[:\d]+\]$/) {
+	%loss = ();
+	%rtt = ();
+	return;
+    }
+
+    if($l =~ m@^(.+)\s*: xmt/rcv/\%loss = \d+/\d+/(\d+)%, min/avg/max = [\d.]+/([\d.]+)/[\d.]+@) {
+	$loss{$1} = $2;
+	$rtt{$1} = $3;
+	return
+    }
+
+    warn "Unhandled fping output '$l'!\n";
+}
+
 sub worker {
     my ($self) = @_;
 
-    my $wh = $self->SUPER::worker();
+    my ($out, $in, $err);
+    $err = gensym;
+    my $pid = open3($out, $in, $err, qw(fping -Q 5 -p 1250 -l));
+    close($in);
 
-    if(defined($wh)) {
-	$main::logger->info("rtt worker...");
-    }
+    print $out join("\n", keys %hosts, '');
+    close($out);
+
+    Event->io(
+	desc => 'fping',
+	fd => $err,
+	poll => 'r',
+	cb => \&fping_handler,
+	repeat => '1',
+    );
 }
 
 1;
