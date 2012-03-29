@@ -27,7 +27,7 @@ package Scotty::Sensor;
 use strict;
 use warnings;
 
-my %services;
+my %sensors;
 my %pipes;
 
 sub new {
@@ -42,23 +42,23 @@ sub new {
 }
 
 sub add {
-    my $service = shift(@_);
+    my $sensor = shift(@_);
 
-    unless(exists($services{$service})) {
-	eval("require Scotty::Sensor::$service;");
+    unless(exists($sensors{$sensor})) {
+	eval("require Scotty::Sensor::$sensor;");
 	die($@) if $@;
 
-	eval("\$services{\$service} = Scotty::Sensor::${service}->new();");
+	eval("\$sensors{\$sensor} = Scotty::Sensor::${sensor}->new();");
 	die($@) if $@;
     }
 
-    $services{$service}->register(@_);
+    $sensors{$sensor}->register(@_);
 }
 
 sub start_worker() {
     $main::logger->info("Forking working processes...");
-    foreach my $service (keys %services) {
-	$services{$service}->worker();
+    foreach my $sensor (keys %sensors) {
+	$sensors{$sensor}->worker();
     }
 }
 
