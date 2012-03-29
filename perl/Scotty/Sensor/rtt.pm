@@ -50,6 +50,16 @@ sub register {
     $main::logger->info("register: $host");
 }
 
+sub series() {
+    my ($self) = @_;
+
+    return (
+	series => ['rtt', 'pl'],
+	interval => [10, 10],
+	units => ['ms', '%'],
+    );
+}
+
 sub fping_handler() {
     my $event = shift;
     my $h = $event->w->fd;
@@ -79,7 +89,7 @@ sub worker {
 
     my ($out, $in, $err);
     $err = gensym;
-    my $pid = open3($out, $in, $err, qw(fping -Q 5 -p 1250 -l));
+    my $pid = open3($out, $in, $err, qw(fping -Q 5 -p 1000 -l));
     close($in);
 
     print $out join("\n", keys %hosts, '');

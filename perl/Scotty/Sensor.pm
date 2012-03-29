@@ -55,17 +55,24 @@ sub add {
     $services{$service}->register(@_);
 }
 
-sub register {
-    my ($self) = @_;
-
-    warn(${$self}{_class} . " did not override register method!\n");
-}
-
 sub start_worker() {
     $main::logger->info("Forking working processes...");
     foreach my $service (keys %services) {
 	$services{$service}->worker();
     }
+}
+
+
+sub register {
+    my ($self) = @_;
+
+    die(${$self}{_class} . " did not override register method!\n");
+}
+
+sub series() {
+    my ($self) = @_;
+
+    die(${$self}{_class} . " did not override series method!\n");
 }
 
 sub worker() {
