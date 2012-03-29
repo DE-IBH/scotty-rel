@@ -60,6 +60,12 @@ sub series() {
     );
 }
 
+sub targets {
+    my ($self) = @_;
+
+    return keys %hosts;
+}
+
 sub fping_handler() {
     my $event = shift;
     my $h = $event->w->fd;

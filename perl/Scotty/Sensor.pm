@@ -75,6 +75,12 @@ sub series() {
     die(${$self}{_class} . " did not override series method!\n");
 }
 
+sub targets() {
+    my ($self) = @_;
+
+    die(${$self}{_class} . " did not override targets method!\n");
+}
+
 sub worker() {
     my ($self) = @_;
 
