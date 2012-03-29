@@ -25,7 +25,7 @@
 package Scotty::BackendConfig;
 
 use XML::LibXML;
-use Scotty::Service;
+use Scotty::Sensor;
 use strict;
 use warnings;
 
@@ -51,7 +51,7 @@ sub parse_services() {
 		my $service = lc($nctx->findvalue("\@name"));
 		my $params = $nctx->findvalue("\@params");
 
-		Scotty::Service::add($service, $host, $params);
+		Scotty::Sensor::add($service, $host, $params);
 	}
 }
 

@@ -22,7 +22,7 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-package Scotty::Service;
+package Scotty::Sensor;
 
 use strict;
 use warnings;
@@ -45,10 +45,10 @@ sub add {
     my $service = shift(@_);
 
     unless(exists($services{$service})) {
-	eval("require Scotty::Service::$service;");
+	eval("require Scotty::Sensor::$service;");
 	die($@) if $@;
 
-	eval("\$services{\$service} = Scotty::Service::${service}->new();");
+	eval("\$services{\$service} = Scotty::Sensor::${service}->new();");
 	die($@) if $@;
     }
 

@@ -22,21 +22,21 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-package Scotty::Service::rtt;
+package Scotty::Sensor::rtt;
 
-use Scotty::Service;
+use Scotty::Sensor;
 use strict;
 use warnings;
 use IPC::Open3;
 use Symbol 'gensym';
-our @ISA = qw(Scotty::Service);
+our @ISA = qw(Scotty::Sensor);
 my %hosts;
 my %loss;
 my %rtt;
 
 sub new {
     my ($class) = @_;
-    my $self = Scotty::Service->new($class);
+    my $self = Scotty::Sensor->new($class);
 
     bless $self, $class;
     return $self;
