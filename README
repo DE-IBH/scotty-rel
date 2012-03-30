@@ -5,4 +5,5 @@ Required packages:
  fping
  Net::SNMP
  Mojolicious
+ Statistics::Basic
  Text::Template
