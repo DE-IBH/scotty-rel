@@ -33,6 +33,8 @@ use POSIX qw(mkfifo);
 use strict;
 use warnings;
 
+$SIG{CHLD} = 'IGNORE';
+
 my $mypid = $$;
 my @nodes = ();
 
