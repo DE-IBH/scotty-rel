@@ -29,6 +29,7 @@ use strict;
 use warnings;
 use IPC::Open3;
 use Symbol 'gensym';
+use Statistics::Basic qw(:all);
 our @ISA = qw(Scotty::Sensor);
 my %hosts;
 my %loss;
@@ -93,21 +94,35 @@ sub fping_handler() {
 sub worker {
     my ($self) = @_;
 
-    my ($out, $in, $err);
-    $err = gensym;
-    my $pid = open3($out, $in, $err, qw(fping -Q 5 -p 1000 -l));
-    close($in);
+    my $wh = $self->SUPER::worker();
+    if(defined($wh)) {
+	my $targets = join("\n", keys %hosts, '');
 
-    print $out join("\n", keys %hosts, '');
-    close($out);
+	while(1) {
+	    my ($out, $in, $err);
+	    $err = gensym;
+	    my $pid = open3($out, $in, $err, qw(fping -q -p 1000 -C 5));
+	    close($in);
 
-    Event->io(
-	desc => 'fping',
-	fd => $err,
-	poll => 'r',
-	cb => \&fping_handler,
-	repeat => '1',
-    );
+	    print $out $targets;
+	    close($out);
+
+	    while(defined(my $l = <$err>)) {
+		chomp($l);
+
+		if($l =~ m@^(.+)\s*: ([\d. -]+)$@) {
+		    my @mea = split(/ /, $2);
+		    my @rtt = grep {/[^-]/} @mea;
+
+		    $loss{$1} = 100 - 100*($#rtt + 1)/($#mea + 1);
+		    $rtt{$1} = ($#rtt > -1 ? median(@rtt) : undef);
+		}
+		else {
+		    warn "Unhandled fping output '$l'!\n";
+		}
+	    }
+	}
+    }
 }
 
 1;
