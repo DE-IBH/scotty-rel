@@ -33,8 +33,11 @@ my %pipes;
 sub new {
     my ($class, $oclass) = @_;
 
+    $oclass =~ /::([^:]+)$/;
+
     my $self = {
 	_class => $oclass,
+	service => $1,
     };
 
     bless $self, $class;
