@@ -4,6 +4,7 @@ Installation
 Required packages:
  fping
  Net::SNMP
+ JSON(::XS)
  Mojolicious
  Statistics::Basic
  Text::Template

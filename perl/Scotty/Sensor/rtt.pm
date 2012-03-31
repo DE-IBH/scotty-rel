@@ -30,6 +30,7 @@ use warnings;
 use IPC::Open3;
 use Symbol 'gensym';
 use Statistics::Basic qw(:all);
+use JSON;
 our @ISA = qw(Scotty::Sensor);
 my %hosts;
 my %loss;
