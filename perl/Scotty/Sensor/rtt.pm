@@ -67,30 +67,6 @@ sub targets {
     return keys %hosts;
 }
 
-sub fping_handler() {
-    my $event = shift;
-    my $h = $event->w->fd;
-    return if eof($h);
-
-    my $l = <$h>;
-    chomp($l);
-
-    # new period
-    if($l =~ /^\[[:\d]+\]$/) {
-	%loss = ();
-	%rtt = ();
-	return;
-    }
-
-    if($l =~ m@^(.+)\s*: xmt/rcv/\%loss = \d+/\d+/(\d+)%, min/avg/max = [\d.]+/([\d.]+)/[\d.]+@) {
-	$loss{$1} = $2;
-	$rtt{$1} = $3;
-	return
-    }
-
-    warn "Unhandled fping output '$l'!\n";
-}
-
 sub worker {
     my ($self) = @_;
 
