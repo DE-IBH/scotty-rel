@@ -28,8 +28,8 @@ use Scotty::BackendConfig;
 use Event;
 use Scotty::Logging::Syslog;
 use Proc::Daemon;
-use IO::File;
-use POSIX qw(mkfifo);
+use IO::Socket;
+use POSIX qw(mkfifo F_SETFL O_NONBLOCK);
 use strict;
 use warnings;
 
@@ -82,32 +82,50 @@ END {
 
 #Proc::Daemon::Init;
 
-my $FIFO_NAME = "/tmp/scotty-rel";
-my $FIFO_PERM = 0700;
-unless(-e $FIFO_NAME) {
-	unless(mkfifo($FIFO_NAME, $FIFO_PERM)) {
-		$main::logger->warning("mkfifo($FIFO_NAME) failed: $!");
-	}
-}
-if(-r $FIFO_NAME) {
-	my $fifo;
-	if($fifo = new IO::File($FIFO_NAME, O_RDWR)) {
-		$fifo->blocking(0);
-		Event->io(
-			desc => 'FIFO handler',
-			fd => $fifo,
-			poll => 'r',
-			cb => \&cmd_handler,
-			repeat => '1',
-		);
+my $UDS = "/tmp/scotty-rel";
+unlink($UDS);
+my $uds = IO::Socket::UNIX->new(
+    Local  => $UDS,
+    Type   => SOCK_STREAM,
+    Listen => 5,
+) or die $@;
+$main::logger->info("listening on $UDS");
 
-		$main::logger->info("listening on $FIFO_NAME");
-	}
-	else {
-		$main::logger->warning("open($FIFO_NAME) failed: $!");
-	}
-} else {
-	$main::logger->warning("$FIFO_NAME not readable - ignoring");
+$uds->sockopt(F_SETFL, O_NONBLOCK);
+
+Event->io(
+	desc => 'uds',
+	fd => $uds,
+	poll => 'r',
+	cb => \&accept_handler,
+	repeat => '1',
+);
+
+my @clients;
+sub accept_handler {
+    my $event = shift;
+    my $h = $event->w->fd;
+
+    my $client = $uds->accept();
+    return unless defined($client);
+
+    $main::logger->info("incoming unix domain connection");
+    print $client Scotty::HostMap::getMap()."\n";
+
+    push(@clients, $client);
+}
+
+sub sensor_data {
+    my $event = shift;
+    my $h = $event->w->fd;
+    return if eof($h);
+
+    my $l = <$h>;
+    chomp($l);
+
+    foreach my $client (@clients) {
+	print $client "$l\n";
+    }
 }
 
 &Scotty::BackendConfig::parse_config(shift);
