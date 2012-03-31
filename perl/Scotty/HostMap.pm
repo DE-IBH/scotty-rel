@@ -40,17 +40,19 @@ sub new {
 }
 
 sub getHost {
-    my ($class, $hostname) = @_;
-
-    return $self->{hostmap}->{$hostname} 
+    my ($self, $hostname) = @_;
 
     unless(exists($self->{hostmap}->{$hostname})) {
 	$self->{hostmap}->{$hostname} = hex($self->{nextid});
 	$self->{nextid}++;
     }
+
+    return $self->{hostmap}->{$hostname};
 }
 
 sub getMap {
+    my ($self) = @_;
+
     return $self->{hostmap};
 }
 

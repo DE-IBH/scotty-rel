@@ -26,9 +26,11 @@ package Scotty::Sensor;
 
 use strict;
 use warnings;
+use Scotty::HostMap;
 
 my %sensors;
 my %pipes;
+my $hostmap = Scotty::HostMap->new();
 
 sub new {
     my ($class, $oclass) = @_;
@@ -45,7 +47,7 @@ sub new {
 }
 
 sub add {
-    my $sensor = shift(@_);
+    my ($sensor, $host, @params) = @_;
 
     unless(exists($sensors{$sensor})) {
 	eval("require Scotty::Sensor::$sensor;");
@@ -55,7 +57,7 @@ sub add {
 	die($@) if $@;
     }
 
-    $sensors{$sensor}->register(@_);
+    $sensors{$sensor}->register($hostmap->getHost($host), $host, @params);
 }
 
 sub start_worker() {

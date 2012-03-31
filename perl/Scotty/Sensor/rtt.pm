@@ -42,11 +42,11 @@ sub new {
 }
 
 sub register {
-    my ($self, $host, $params) = @_;
+    my ($self, $id, $host, $params) = @_;
 
-    $self->{'hosts'}->{$host} = $params;
+    $self->{hostmap}->{$host} = $id;
 
-    $main::logger->info("register: $host");
+    $main::logger->info("register: $host ($id)");
 }
 
 sub series() {
@@ -62,7 +62,7 @@ sub series() {
 sub targets {
     my ($self) = @_;
 
-    return keys %{$self->{'hosts'}};
+    return keys %{$self->{hostmap}};
 }
 
 sub worker {
@@ -70,7 +70,7 @@ sub worker {
 
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
-	my $targets = join("\n", keys %{$self->{'hosts'}}, '');
+	my $targets = join("\n", keys %{$self->{hostmap}}, '');
 
 	while(1) {
 	    my ($out, $in, $err);
@@ -86,11 +86,12 @@ sub worker {
 		chomp($l);
 
 		if($l =~ m@^(\S+)\s*: ([\d. -]+)$@) {
+		    my $id = $self->{hostmap}->{$1};
 		    my @mea = split(/ /, $2);
 		    my @rtt = grep {/[^-]/} @mea;
 
-		    $res{"$1_$self->{service}|pl"} = 100 - 100*($#rtt + 1)/($#mea + 1);
-		    $res{"$1_$self->{service}|rtt"} = ($#rtt > -1 ? median(@rtt)*1.0 : undef);
+		    $res{"${id}_$self->{service}|pl"} = 100 - 100*($#rtt + 1)/($#mea + 1);
+		    $res{"${id}_$self->{service}|rtt"} = ($#rtt > -1 ? median(@rtt)*1.0 : undef);
 		}
 		else {
 		    warn "Unhandled fping output '$l'!\n";
