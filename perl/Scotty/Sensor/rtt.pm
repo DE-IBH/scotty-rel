@@ -32,9 +32,6 @@ use Symbol 'gensym';
 use Statistics::Basic qw(:all);
 use JSON;
 our @ISA = qw(Scotty::Sensor);
-my %hosts;
-my %loss;
-my %rtt;
 
 sub new {
     my ($class) = @_;
@@ -47,7 +44,7 @@ sub new {
 sub register {
     my ($self, $host, $params) = @_;
 
-    $hosts{$host} = $params;
+    $self->{'hosts'}->{$host} = $params;
 
     $main::logger->info("register: $host");
 }
@@ -65,7 +62,7 @@ sub series() {
 sub targets {
     my ($self) = @_;
 
-    return keys %hosts;
+    return keys %{$self->{'hosts'}};
 }
 
 sub worker {
@@ -73,7 +70,7 @@ sub worker {
 
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
-	my $targets = join("\n", keys %hosts, '');
+	my $targets = join("\n", keys %{$self->{'hosts'}}, '');
 
 	while(1) {
 	    my ($out, $in, $err);
@@ -84,6 +81,8 @@ sub worker {
 	    print $out $targets;
 	    close($out);
 
+	    my %loss;
+	    my %rtt;
 	    while(defined(my $l = <$err>)) {
 		chomp($l);
 
