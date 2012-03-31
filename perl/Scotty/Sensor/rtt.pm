@@ -81,22 +81,23 @@ sub worker {
 	    print $out $targets;
 	    close($out);
 
-	    my %loss;
-	    my %rtt;
+	    my %res;
 	    while(defined(my $l = <$err>)) {
 		chomp($l);
 
-		if($l =~ m@^(.+)\s*: ([\d. -]+)$@) {
+		if($l =~ m@^(\S+)\s*: ([\d. -]+)$@) {
 		    my @mea = split(/ /, $2);
 		    my @rtt = grep {/[^-]/} @mea;
 
-		    $loss{$1} = 100 - 100*($#rtt + 1)/($#mea + 1);
-		    $rtt{$1} = ($#rtt > -1 ? median(@rtt) : undef);
+		    $res{"$1_$self->{service}|pl"} = 100 - 100*($#rtt + 1)/($#mea + 1);
+		    $res{"$1_$self->{service}|rtt"} = ($#rtt > -1 ? median(@rtt)*1.0 : undef);
 		}
 		else {
 		    warn "Unhandled fping output '$l'!\n";
 		}
 	    }
+
+	    print $wh encode_json(\%res)."\n";
 	}
     }
 }
