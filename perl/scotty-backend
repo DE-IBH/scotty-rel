@@ -30,6 +30,7 @@ use Scotty::Logging::Syslog;
 use Proc::Daemon;
 use IO::Socket;
 use POSIX qw(mkfifo F_SETFL O_NONBLOCK);
+use JSON;
 use strict;
 use warnings;
 
@@ -110,7 +111,7 @@ sub accept_handler {
     return unless defined($client);
 
     $main::logger->info("incoming unix domain connection");
-    print $client Scotty::HostMap::getMap()."\n";
+    print $client encode_json(Scotty::Sensor::getMap())."\n";
 
     push(@clients, $client);
 }

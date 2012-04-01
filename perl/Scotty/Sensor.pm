@@ -68,6 +68,10 @@ sub start_worker() {
     }
 }
 
+sub getMap() {
+    return $hostmap->getMap();
+}
+
 
 sub register {
     my ($self) = @_;
