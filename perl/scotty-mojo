@@ -31,7 +31,7 @@ plugin 'PODRenderer';
 
 get '/' => sub {
   my $self = shift;
-  $self->render('index');
+  $self->render_static('index.html');
 };
 
 app->start;
