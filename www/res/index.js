@@ -43,7 +43,47 @@ function log(msg) {
     $('#log').append(msg + "\n");
 }
 
-function loadViewDone(svg, error) {
+var ws;
+var viewstoload = new Array();
+var viewsloaded = new Array();
+
+function scotty_init() {
+    var wsurl = window.location + "/ws";
+    wsurl.replace(/^http/i, "ws");
+    log("[WS] URL = " + wsurl);
+    ws = new WebSocket("ws://localhost:3000/ws");
+
+    ws.onopen = function() {
+        log("[WS] open");
+    };
+    ws.onmessage = function(e) {
+        var m = JSON.parse(e.data);
+        switch(m.op) {
+	    case "map":
+		log("[WS] map: " + m.pl);
+		break;
+	    case "res":
+		log("[WS] res: " + m.pl);
+		break;
+	    default:
+		log("[WS] unsupported op '" + m.op + "'");
+		break;
+        }
+    };
+    ws.onclose = function() {
+        log("[WS] closed");
+    };
+    ws.onerror = function() {
+        log("[WS] failed");
+    };
+}
+
+function scotty_loadView(id, view) {
+    viewstoload.push(id);
+    $('#' + id).svg({loadURL: view, onLoad: scotty_loadViewDone});
+}
+
+function scotty_loadViewDone(svg, error) {
     if(error) {
 	log('Failed: ' + error);
 	svg.text(10, 20, error, {fill: 'red'});
@@ -56,4 +96,10 @@ function loadViewDone(svg, error) {
 	charts.push(this.id);
     });
     log(' ' + charts.join(', '));
+
+    viewsloaded.push(this.id);
+    if(viewstoload.length == viewsloaded.length) {
+	log("[WS] Request map...");
+	ws.send("getmap");
+    }
 }

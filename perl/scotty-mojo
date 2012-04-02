@@ -25,10 +25,38 @@
 #
 
 use Mojolicious::Lite;
+use JSON;
+use IO::Socket;
 
 get '/' => sub {
   my $self = shift;
   $self->render_static('index.html');
+};
+
+websocket '/ws' => sub {
+    my $self = shift;
+    $self->send({text => "scotty"});
+
+    $self->on(
+	message => sub {
+	    my ($self, $msg) = @_;
+
+	    if($msg eq 'getmap') {
+		my $client = IO::Socket::UNIX->new(
+		    Peer => '/tmp/scotty-rel',
+		    Type => SOCK_STREAM,
+		) or die $@;
+		my $map = <$client>;
+		close($client);
+		chomp($map);
+
+		$self->send(encode_json({
+		    op => 'map',
+		    pl => $map,
+		}));
+	    }
+	},
+    );
 };
 
 app->start;
