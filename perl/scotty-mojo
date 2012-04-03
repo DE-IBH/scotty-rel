@@ -59,18 +59,24 @@ websocket '/ws' => sub {
 			$stream->on(error => sub {
 			    my ($stream, $err) = @_;
 			    app->log->debug("backend error: $err");
-			    $loop->drop($stream);
+			    $client->close();
 			});
 
 			$stream->on(read => sub {
-			    my($stream, $chunk) = @_;
-			    $client->send($chunk);
+			    my($strea, $chunk) = @_;
+
+			    if(exists($backend{$cid})) {
+				$client->send($chunk);
+			    }
+			    else {
+				$stream->close();
+			    }
 			});
 
 			$stream->on(close => sub {
 			    my ($stream) = @_;
 			    app->log->debug("backend closed");
-			    $client->finish();
+			    $client->finish() if(defined($client->tx));
 			});
 		    }
 		});
@@ -80,11 +86,14 @@ websocket '/ws' => sub {
 	    }
     });
 
-    $client->on(close => sub {
+    $client->on(finish => sub {
 	my $client = shift;
 	my $cid = "$client";
 
-	$backend{$cid}->close();
+	if(exists($backend{$cid})) {
+	    app->log->debug("client closed");
+	    delete($backend{$cid});
+	}
     });
 };
 
