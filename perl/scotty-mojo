@@ -35,20 +35,20 @@ get '/' => sub {
 
 websocket '/ws' => sub {
     my $client = shift;
-    my $cid = "$client";
+    my %backend;
 
     # increase timeout
     Mojo::IOLoop->stream($client->tx->connection)->timeout(300);
 
-    $client->on(
-	message => sub {
+    $client->on(message => sub {
 	    my ($client, $msg) = @_;
+	    my $cid = "$client";
 
 	    app->log->debug("client: $msg");
 	    if($msg eq 'connect') {
 		app->log->debug('connecting to backend');
 
-		my $con = Mojo::IOLoop->client({port => 1701} => sub {
+		$backend{$cid} = Mojo::IOLoop->client({port => 1701} => sub {
 		    my ($loop, $err, $stream) = @_;
 
 		    if(defined($err)) {
@@ -59,11 +59,18 @@ websocket '/ws' => sub {
 			$stream->on(error => sub {
 			    my ($stream, $err) = @_;
 			    app->log->debug("backend error: $err");
+			    $loop->drop($stream);
 			});
 
 			$stream->on(read => sub {
 			    my($stream, $chunk) = @_;
 			    $client->send($chunk);
+			});
+
+			$stream->on(close => sub {
+			    my ($stream) = @_;
+			    app->log->debug("backend closed");
+			    $client->finish();
 			});
 		    }
 		});
@@ -71,8 +78,14 @@ websocket '/ws' => sub {
 	    else {
 		app->log->debug('unknown command');
 	    }
-	},
-    );
+    });
+
+    $client->on(close => sub {
+	my $client = shift;
+	my $cid = "$client";
+
+	$backend{$cid}->close();
+    });
 };
 
 app->start;

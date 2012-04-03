@@ -49,10 +49,13 @@ var viewstoload = new Array();
 var viewsloaded = new Array();
 
 function scotty_init() {
-    var wsurl = window.location + "/ws";
-    wsurl.replace(/^http/i, "ws");
-    log("[WS] URL = " + wsurl);
-    ws = new WebSocket("ws://localhost:3000/ws");
+    var wsurl = window.location.toString().replace(/^http/i, "ws");
+    if(wsurl.charAt(wsurl.length-1) != '/') {
+	wsurl += '/';
+    }
+    wsurl += 'ws';
+    log("[WS] URL = '" + wsurl + "'");
+    ws = new WebSocket(wsurl);
 
     ws.onopen = function() {
         log("[WS] open");
