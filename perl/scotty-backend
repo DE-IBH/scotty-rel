@@ -85,12 +85,13 @@ END {
 
 my $UDS = "/tmp/scotty-rel";
 unlink($UDS);
-my $uds = IO::Socket::UNIX->new(
-    Local  => $UDS,
-    Type   => SOCK_STREAM,
+my $uds = IO::Socket::INET->new(
     Listen => 5,
+    LocalPort => 1701,
+    LocalAddr => '127.0.0.1',
+    Proto => 'tcp',
 ) or die $@;
-$main::logger->info("listening on $UDS");
+$main::logger->info("listening...");
 
 $uds->sockopt(F_SETFL, O_NONBLOCK);
 
