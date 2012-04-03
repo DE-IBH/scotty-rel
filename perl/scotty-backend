@@ -68,6 +68,7 @@ sub DIE_handler {
 
 $SIG{__WARN__} = 'WARN_handler';
 $SIG{__DIE__}  = 'DIE_handler';
+$SIG{PIPE}  = 'IGNORE';
 
 END {
 	if($mypid == $$) {
@@ -112,7 +113,7 @@ sub accept_handler {
     return unless defined($client);
 
     $main::logger->info("incoming unix domain connection");
-    print $client encode_json(Scotty::Sensor::getMap())."\n";
+    print $client encode_json({op => 'map', pl => Scotty::Sensor::getMap()})."\n";
 
     push(@clients, $client);
 }

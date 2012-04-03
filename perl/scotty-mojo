@@ -25,8 +25,8 @@
 #
 
 use Mojolicious::Lite;
+use Mojo::IOLoop;;
 use JSON;
-use IO::Socket;
 
 get '/' => sub {
   my $self = shift;
@@ -34,26 +34,42 @@ get '/' => sub {
 };
 
 websocket '/ws' => sub {
-    my $self = shift;
-    $self->send({text => "scotty"});
+    my $client = shift;
+    my $cid = "$client";
 
-    $self->on(
+    # increase timeout
+    Mojo::IOLoop->stream($client->tx->connection)->timeout(300);
+
+    $client->on(
 	message => sub {
-	    my ($self, $msg) = @_;
+	    my ($client, $msg) = @_;
 
-	    if($msg eq 'getmap') {
-		my $client = IO::Socket::UNIX->new(
-		    Peer => '/tmp/scotty-rel',
-		    Type => SOCK_STREAM,
-		) or die $@;
-		my $map = <$client>;
-		close($client);
-		chomp($map);
+	    app->log->debug("client: $msg");
+	    if($msg eq 'connect') {
+		app->log->debug('connecting to backend');
 
-		$self->send(encode_json({
-		    op => 'map',
-		    pl => $map,
-		}));
+		my $con = Mojo::IOLoop->client({port => 1701} => sub {
+		    my ($loop, $err, $stream) = @_;
+
+		    if(defined($err)) {
+			app->log->debug("backend failed: $err");
+			$client->close();
+		    }
+		    else {
+			$stream->on(error => sub {
+			    my ($stream, $err) = @_;
+			    app->log->debug("backend error: $err");
+			});
+
+			$stream->on(read => sub {
+			    my($stream, $chunk) = @_;
+			    $client->send($chunk);
+			});
+		    }
+		});
+	    }
+	    else {
+		app->log->debug('unknown command');
 	    }
 	},
     );

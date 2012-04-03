@@ -98,7 +98,7 @@ sub worker {
 		}
 	    }
 
-	    print $wh encode_json(\%res)."\n";
+	    print $wh encode_json({op => 'res', pl => \%res})."\n";
 	}
     }
 }

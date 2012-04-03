@@ -40,7 +40,8 @@ $(function () {
 });
 
 function log(msg) {
-    $('#log').append(msg + "\n");
+    $('#log').append(new Date().toTimeString() + " " + msg + "\n");
+    $('#log').scrollTop($('#log')[0].scrollHeight - $('#log').height());
 }
 
 var ws;
@@ -60,10 +61,16 @@ function scotty_init() {
         var m = JSON.parse(e.data);
         switch(m.op) {
 	    case "map":
-		log("[WS] map: " + m.pl);
+		log("[WS] map:");
+		for(var key in m.pl) {
+		    log(key + " = " + m.pl[key]);
+		}
 		break;
 	    case "res":
-		log("[WS] res: " + m.pl);
+		log("[WS] res:");
+		for(var key in m.pl) {
+		    log(key + " = " + m.pl[key]);
+		}
 		break;
 	    default:
 		log("[WS] unsupported op '" + m.op + "'");
@@ -100,6 +107,6 @@ function scotty_loadViewDone(svg, error) {
     viewsloaded.push(this.id);
     if(viewstoload.length == viewsloaded.length) {
 	log("[WS] Request map...");
-	ws.send("getmap");
+	ws.send("connect");
     }
 }
