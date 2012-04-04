@@ -22,7 +22,7 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-package Scotty::HostMap;
+package Scotty::IDMapper;
 
 use strict;
 use warnings;
@@ -31,7 +31,7 @@ sub new {
     my ($class) = @_;
 
     my $self = {
-	hostmap => { },
+	idmap => { },
 	nextid => 0,
     };
 
@@ -39,21 +39,22 @@ sub new {
     return $self;
 }
 
-sub getHost {
-    my ($self, $hostname) = @_;
+sub getID {
+    my ($self, $name) = @_;
 
-    unless(exists($self->{hostmap}->{$hostname})) {
-	$self->{hostmap}->{$hostname} = hex($self->{nextid});
+    unless(exists($self->{idmap}->{$name})) {
+	$self->{idmap}->{$name} = hex($self->{nextid});
 	$self->{nextid}++;
     }
 
-    return $self->{hostmap}->{$hostname};
+    return $self->{idmap}->{$name};
 }
 
 sub getMap {
     my ($self) = @_;
 
-    return $self->{hostmap};
+use Data::Dumper;
+    return $self->{idmap};
 }
 
 1;

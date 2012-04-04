@@ -26,12 +26,12 @@ package Scotty::Sensor;
 
 use strict;
 use warnings;
-use Scotty::HostMap;
+use Scotty::IDMapper;
 use Event;
 
 my %sensors;
 my %pipes;
-my $hostmap = Scotty::HostMap->new();
+my $idmap = Scotty::IDMapper->new();
 
 sub new {
     my ($class, $oclass) = @_;
@@ -58,7 +58,7 @@ sub add {
 	die($@) if $@;
     }
 
-    $sensors{$sensor}->register($hostmap->getHost($host), $host, @params);
+    $sensors{$sensor}->register($idmap, $host, @params);
 }
 
 sub start_worker() {
@@ -69,7 +69,7 @@ sub start_worker() {
 }
 
 sub getMap() {
-    return $hostmap->getMap();
+    return $idmap->getMap();
 }
 
 

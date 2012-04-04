@@ -113,7 +113,7 @@ sub accept_handler {
     return unless defined($client);
 
     $main::logger->info("incoming unix domain connection");
-    print $client encode_json({op => 'map', pl => Scotty::Sensor::getMap()})."\n";
+    print $client encode_json(['map', Scotty::Sensor::getMap()])."\n";
 
     push(@clients, $client);
 }
