@@ -62,21 +62,21 @@ function scotty_init() {
     };
     ws.onmessage = function(e) {
         var m = JSON.parse(e.data);
-        switch(m.op) {
+        switch(m[0]) {
 	    case "map":
 		log("[WS] map:");
-		for(var key in m.pl) {
-		    log(key + " = " + m.pl[key]);
+		for(var key in m[1]) {
+		    log(key + " = " + m[1][key]);
 		}
 		break;
 	    case "res":
 		log("[WS] res:");
-		for(var key in m.pl) {
-		    log(key + " = " + m.pl[key]);
+		for(var key in m[1]) {
+		    log(key + " = " + m[1][key]);
 		}
 		break;
 	    default:
-		log("[WS] unsupported op '" + m.op + "'");
+		log("[WS] '" + m[0] + "' unkown");
 		break;
         }
     };
