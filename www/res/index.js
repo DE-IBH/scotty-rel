@@ -45,6 +45,7 @@ function log(msg) {
 }
 
 var ws;
+var idmap;
 var viewstoload = new Array();
 var viewsloaded = new Array();
 
@@ -65,6 +66,7 @@ function scotty_init() {
         switch(m[0]) {
 	    case "map":
 		log("[WS] map:");
+		idmap = m[1];
 		for(var key in m[1]) {
 		    log(key + " = " + m[1][key]);
 		}
