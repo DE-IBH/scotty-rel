@@ -46,6 +46,7 @@ function log(msg) {
 
 var ws;
 var idmap;
+var series = new Object();
 var viewstoload = new Array();
 var viewsloaded = new Array();
 
@@ -74,7 +75,15 @@ function scotty_init() {
 	    case "res":
 		log("[WS] res:");
 		for(var key in m[1]) {
-		    log(key + " = " + m[1][key]);
+		    if(typeof series[key] == "undefined") {
+			series[key] = new Array(60);
+		    }
+		    series[key].push(m[1][key]);
+		    if(series[key].length > 60) {
+			series[key].shift();
+		    }
+
+		    log(key + " = " + series[key].join(','));
 		}
 		break;
 	    default:
