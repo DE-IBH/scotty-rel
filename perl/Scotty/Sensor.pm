@@ -30,6 +30,7 @@ use Scotty::IDMapper;
 use Event;
 
 my %sensors;
+my %series;
 my %pipes;
 my $idmap = Scotty::IDMapper->new();
 
@@ -56,6 +57,8 @@ sub add {
 
 	eval("\$sensors{\$sensor} = Scotty::Sensor::${sensor}->new();");
 	die($@) if $@;
+
+	$series{$sensor} = $sensors{$sensor}->series();
     }
 
     $sensors{$sensor}->register($idmap, $host, @params);
@@ -70,6 +73,10 @@ sub start_worker() {
 
 sub getMap() {
     return $idmap->getMap();
+}
+
+sub getSeries() {
+    return \%series;
 }
 
 

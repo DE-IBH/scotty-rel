@@ -112,8 +112,9 @@ sub accept_handler {
     my $client = $uds->accept();
     return unless defined($client);
 
-    $main::logger->info("incoming unix domain connection");
+    $main::logger->info("incoming connection");
     print $client encode_json(['map', Scotty::Sensor::getMap()])."\n";
+    print $client encode_json(['series', Scotty::Sensor::getSeries()])."\n";
 
     push(@clients, $client);
 }
