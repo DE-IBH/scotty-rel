@@ -79,11 +79,9 @@ function scotty_init() {
 		    ridmap[m[1][key]] = key;
 		}
 		break;
-	    case "res":
-		log("[WS] res:");
+	    case "d":
 		for(var key in m[1]) {
 		    scotty_adddata(key, m[1][key]);
-		    log(key + " = " + series[key].join(','));
 		}
 		scotty_updatesvg(window.CURRENT_VIEW);
 		break;
@@ -105,12 +103,12 @@ function scotty_adddata(key, value) {
 	series[key] = new Array(60);
     }
 
-    series[key].push(value);
+    series[key].push(JSON.parse("[" + value + "]"));
     if(series[key].length > 60) {
 	series[key].shift();
     }
 
-    svgdirty[key.split('#')[0]] = 1;
+    svgdirty[key] = 1;
 }
 
 function scotty_updatesvg(view, redraw) {
@@ -124,17 +122,19 @@ function scotty_updatesvg(view, redraw) {
     }
 
     for(var service in svgdirty) {
-	if(!(typeof svgcharts[view][ridmap[service]] == "undefined")) {
+	if(typeof svgcharts[view][ridmap[service]] != "undefined") {
 	    var chart = svgcharts[view][ridmap[service]];
 
 	    var points = new Array();
 	    var dx = chart.width / 60;
 	    var ox = chart.x;
 	    var oy = chart.y + chart.height;
-	    for(var i=0; i < series[service + "#0"].length; i++) {
-		var v = series[service + "#0"][i];
-		if(typeof v != "undefined") {
-		    points.push([ox, oy - v]);
+	    for(var i=0; i < 60; i++) {
+		if(typeof series[service][i] != "undefined") {
+		    var v = series[service][i][0];
+		    if(typeof v != "undefined") {
+			points.push([ox, oy - v]);
+		    }
 		}
 		ox += dx;
 	    }
