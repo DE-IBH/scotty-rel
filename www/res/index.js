@@ -141,11 +141,7 @@ function scotty_updatesvg(view, redraw) {
 	    }
 
 	    var chart = svgcharts[view][ridmap[chartid]];
-for(k in services[service]) {
-log(services[service][k]);
-}
 	    for(idx in services[service].label) {
-	    log(idx);
 		var points = new Array();
 		var dx = chart.width / 60;
 		var ox = chart.x;
