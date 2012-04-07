@@ -35,6 +35,8 @@ $(function () {
         window.CURRENT_VIEW = this.hash;
         log('Viewing '  + this.hash.substr(1) + '...');
 
+        scotty_updatesvg(this.hash, 1);
+
         return false;
     }).filter(':first').click();
 });
@@ -111,8 +113,15 @@ function scotty_adddata(key, value) {
     svgdirty[key.split('#')[0]] = 1;
 }
 
-function scotty_updatesvg(view) {
+function scotty_updatesvg(view, redraw) {
     var svg = svgviews[view];
+
+    if(redraw) {
+	svgdirty = new Object();
+	for(id in ridmap) {
+	    svgdirty[id] = 1;
+	}
+    }
 
     for(var service in svgdirty) {
 	if(!(typeof svgcharts[view][ridmap[service]] == "undefined")) {
