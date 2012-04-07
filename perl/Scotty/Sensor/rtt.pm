@@ -52,11 +52,11 @@ sub register {
 sub series() {
     my ($self) = @_;
 
-    return (
-	series => ['rtt', 'pl'],
+    return {
+	label => ['rtt', 'pl'],
 	interval => [5, 5],
 	units => ['ms', '%'],
-    );
+    };
 }
 
 sub targets {
