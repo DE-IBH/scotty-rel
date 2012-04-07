@@ -50,6 +50,7 @@ var ws;
 var idmap;
 var ridmap = new Object();
 var series = new Object();
+var services = new Object();
 var svgviews = new Object();
 var svgdirty = new Object();
 var svgcharts = new Object();
@@ -77,6 +78,17 @@ function scotty_init() {
 		for(var key in m[1]) {
 		    log(key + " = " + m[1][key]);
 		    ridmap[m[1][key]] = key;
+		}
+		break;
+	    case "series":
+		log("[WS] services:");
+		idmap = m[1];
+		for(var srv in m[1]) {
+		    log(" " + srv);
+		    services[srv] = new Object();
+		    for(var opt in m[1][srv]) {
+			services[srv][opt] = m[1][srv][opt];
+		    }
 		}
 		break;
 	    case "d":
@@ -121,28 +133,42 @@ function scotty_updatesvg(view, redraw) {
 	}
     }
 
-    for(var service in svgdirty) {
-	if(typeof svgcharts[view][ridmap[service]] != "undefined") {
-	    var chart = svgcharts[view][ridmap[service]];
+    for(var chartid in svgdirty) {
+	if(typeof svgcharts[view][ridmap[chartid]] != "undefined") {
+	    var service = ridmap[chartid].split('_')[1];
+	    if(typeof services[service] == "undefined") {
+		log("Unkown service '" + service + "' (chart '" + ridmap[chartid] + "')!");
+	    }
 
-	    var points = new Array();
-	    var dx = chart.width / 60;
-	    var ox = chart.x;
-	    var oy = chart.y + chart.height;
-	    for(var i=0; i < 60; i++) {
-		if(typeof series[service][i] != "undefined") {
-		    var v = series[service][i][0];
-		    if(typeof v != "undefined") {
-			points.push([ox, oy - v]);
+	    var chart = svgcharts[view][ridmap[chartid]];
+for(k in services[service]) {
+log(services[service][k]);
+}
+	    for(idx in services[service].label) {
+	    log(idx);
+		var points = new Array();
+		var dx = chart.width / 60;
+		var ox = chart.x;
+		var oy = chart.y + chart.height;
+		for(var i=0; i < 60; i++) {
+		    if(typeof series[chartid][i] != "undefined") {
+			var v = series[chartid][i][idx];
+			if(typeof v != "undefined") {
+			    points.push([ox, oy - v]);
+			}
 		    }
+		    ox += dx;
 		}
-		ox += dx;
-	    }
 
-	    if(typeof chart.line != "undefined") {
-		svg.remove(chart.line);
+		if(typeof chart.line == "undefined") {
+		    chart.line = new Array();
+		}
+
+		if(typeof chart.line[idx] != "undefined") {
+		    svg.remove(chart.line[idx]);
+		}
+		chart.line[idx] = svg.polyline(points, {stroke: 'red', strokeWidth: 2});
 	    }
-	    chart.line = svg.polyline(points, {stroke: 'red', strokeWidth: 2});
 	}
     }
 
