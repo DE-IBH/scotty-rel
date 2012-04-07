@@ -46,7 +46,11 @@ function log(msg) {
 
 var ws;
 var idmap;
+var ridmap = new Object();
 var series = new Object();
+var svgviews = new Object();
+var svgdirty = new Object();
+var svgcharts = new Object();
 var viewstoload = new Array();
 var viewsloaded = new Array();
 
@@ -70,21 +74,16 @@ function scotty_init() {
 		idmap = m[1];
 		for(var key in m[1]) {
 		    log(key + " = " + m[1][key]);
+		    ridmap[m[1][key]] = key;
 		}
 		break;
 	    case "res":
 		log("[WS] res:");
 		for(var key in m[1]) {
-		    if(typeof series[key] == "undefined") {
-			series[key] = new Array(60);
-		    }
-		    series[key].push(m[1][key]);
-		    if(series[key].length > 60) {
-			series[key].shift();
-		    }
-
+		    scotty_adddata(key, m[1][key]);
 		    log(key + " = " + series[key].join(','));
 		}
+		scotty_updatesvg(window.CURRENT_VIEW);
 		break;
 	    default:
 		log("[WS] '" + m[0] + "' unkown");
@@ -97,6 +96,32 @@ function scotty_init() {
     ws.onerror = function() {
         log("[WS] failed");
     };
+}
+
+function scotty_adddata(key, value) {
+    if(typeof series[key] == "undefined") {
+	series[key] = new Array(60);
+    }
+
+    series[key].push(value);
+    if(series[key].length > 60) {
+	series[key].shift();
+    }
+
+    svgdirty[key.split('#')[0]] = 1;
+}
+
+function scotty_updatesvg(view) {
+    for(var chart in svgdirty) {
+	if(!(typeof svgcharts[view][ridmap[chart]] == "undefined")) {
+	    var svg = svgcharts[view][ridmap[chart]];
+	    log(view + ": " + svgviews[view].root());
+	}
+    }
+}
+
+function scotty_createChart(svg, chart) {
+    svg.rect(chart.x, chart.y, chart.width, chart.height, {stroke: 'black', fill: 'none'});
 }
 
 function scotty_loadView(id, view) {
@@ -112,11 +137,21 @@ function scotty_loadViewDone(svg, error) {
     }
 
     log('Searching charts...');
-    var charts = new Array();
+    var view = this.id;
+    svgviews["#" + view] = svg;
+    svgcharts["#" + view] = new Object();
     $('rect[id^="so_"]', svg.root()).each(function() {
-	charts.push(this.id);
+	log(' ' + this.id.substring(3));
+	var chart = {
+	    x: this.getAttribute("x"),
+	    y: this.getAttribute("y"),
+	    width: this.getAttribute("width"),
+	    height: this.getAttribute("height"),
+	};
+	svg.remove(this);
+	scotty_createChart(svg, chart);
+	svgcharts["#" + view][this.id.substring(3)] = chart;
     });
-    log(' ' + charts.join(', '));
 
     viewsloaded.push(this.id);
     if(viewstoload.length == viewsloaded.length) {
