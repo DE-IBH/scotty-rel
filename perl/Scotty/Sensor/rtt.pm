@@ -54,7 +54,7 @@ sub series() {
 
     return {
 	label => ['rtt', 'pl'],
-	interval => [5, 5],
+	interval => 5,
 	units => ['ms', '%'],
     };
 }
