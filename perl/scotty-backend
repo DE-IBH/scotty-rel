@@ -91,6 +91,7 @@ my $uds = IO::Socket::INET->new(
     LocalPort => 1701,
     LocalAddr => '127.0.0.1',
     Proto => 'tcp',
+    ReuseAddr => 1,
 ) or die $@;
 $main::logger->info("listening...");
 
