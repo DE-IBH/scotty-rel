@@ -95,8 +95,7 @@ sub worker {
 		    my @mea = split(/ /, $2);
 		    my @rtt = grep {/[^-]/} @mea;
 
-		    $res{"$sid#0"} = ($#rtt > -1 ? median(@rtt)*1.0 : undef);
-		    $res{"$sid#1"} = 100 - 100*($#rtt + 1)/($#mea + 1);
+		    $res{"$sid"} = [($#rtt > -1 ? median(@rtt)*1.0 : undef), 100 - 100*($#rtt + 1)/($#mea + 1)];
 		}
 		else {
 		    warn "Unhandled fping output '$l'!\n";
