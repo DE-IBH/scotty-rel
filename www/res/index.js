@@ -112,12 +112,32 @@ function scotty_adddata(key, value) {
 }
 
 function scotty_updatesvg(view) {
-    for(var chart in svgdirty) {
-	if(!(typeof svgcharts[view][ridmap[chart]] == "undefined")) {
-	    var svg = svgcharts[view][ridmap[chart]];
-	    log(view + ": " + svgviews[view].root());
+    var svg = svgviews[view];
+
+    for(var service in svgdirty) {
+	if(!(typeof svgcharts[view][ridmap[service]] == "undefined")) {
+	    var chart = svgcharts[view][ridmap[service]];
+
+	    var points = new Array();
+	    var dx = chart.width / 60;
+	    var ox = chart.x;
+	    var oy = chart.y + chart.height;
+	    for(var i=0; i < series[service + "#0"].length; i++) {
+		var v = series[service + "#0"][i];
+		if(typeof v != "undefined") {
+		    points.push([ox, oy - v]);
+		}
+		ox += dx;
+	    }
+
+	    if(typeof chart.line != "undefined") {
+		svg.remove(chart.line);
+	    }
+	    chart.line = svg.polyline(points, {stroke: 'red', strokeWidth: 2});
 	}
     }
+
+    svgdirty = new Object();
 }
 
 function scotty_createChart(svg, chart) {
@@ -143,10 +163,10 @@ function scotty_loadViewDone(svg, error) {
     $('rect[id^="so_"]', svg.root()).each(function() {
 	log(' ' + this.id.substring(3));
 	var chart = {
-	    x: this.getAttribute("x"),
-	    y: this.getAttribute("y"),
-	    width: this.getAttribute("width"),
-	    height: this.getAttribute("height"),
+	    x: parseInt(this.getAttribute("x")),
+	    y: parseInt(this.getAttribute("y")),
+	    width: parseInt(this.getAttribute("width")),
+	    height: parseInt(this.getAttribute("height")),
 	};
 	svg.remove(this);
 	scotty_createChart(svg, chart);
