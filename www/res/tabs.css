@@ -8,6 +8,14 @@
     background: #a0a0a0;
 }
 
+#scotty_chart {
+    display: none;
+    position: absolute;
+    margin: auto;
+    padding: 1em;
+    background: #e0e0e0;
+}
+
 #scotty_hb {
     float: right;
     width: 14px;

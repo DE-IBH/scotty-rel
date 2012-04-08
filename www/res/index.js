@@ -180,8 +180,25 @@ function scotty_updatesvg(view, redraw) {
     svgdirty = new Object();
 }
 
+function scotty_inChart(rect) {
+    $('#scotty_chart').show();
+}
+
+function scotty_outChart(rect) {
+    $('#scotty_chart').hide();
+}
+
 function scotty_createChart(svg, chart) {
-    svg.rect(chart.x, chart.y, chart.width, chart.height, {stroke: 'black', fill: 'none'});
+    svg.rect(
+	chart.x, chart.y, chart.width, chart.height, 
+	{
+	    id: chart.id,
+	    onmouseover: "scotty_inChart(this);",
+	    onmouseout: "scotty_outChart(this);",
+	    stroke: 'black',
+	    fill: 'white'
+	}
+    );
 }
 
 function scotty_loadView(id, view) {
@@ -203,6 +220,7 @@ function scotty_loadViewDone(svg, error) {
     $('rect[id^="so_"]', svg.root()).each(function() {
 	log(' ' + this.id.substring(3));
 	var chart = {
+	    id: this.id.substring(3),
 	    x: parseInt(this.getAttribute("x")),
 	    y: parseInt(this.getAttribute("y")),
 	    width: parseInt(this.getAttribute("width")),
