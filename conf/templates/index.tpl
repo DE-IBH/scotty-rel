@@ -11,7 +11,7 @@
 <script type="text/javascript" src="web-socket-js/web_socket.js"></script>
 </head>
 <body>
-<div id="scotty_about">
+<div id="scotty_about_popup">
 <span style="float: right"><a href="javascript:scotty_about();" style="text-decoration: none">x</a></span>
 <h1>Scotty RELOADED</h1>
 <pre style="text-align: left">
@@ -50,7 +50,7 @@ License:
 </table>
 </div>
 <div id="scotty_hb"></div>
-<div style="float: right"><small><a href="javascript:scotty_about();" style="text-decoration: none">Scotty RELOADED</a></small></div>
+<div id="scotty_about"><small><a href="javascript:scotty_about();" style="text-decoration: none">Scotty RELOADED</a></small></div>
 <div class="tabs">
     <ul class="nav">
 {
@@ -65,7 +65,7 @@ License:
     }
 }
 </div>
-<div><textarea style="width: 100%; height: 15%" id="log"></textarea></div>
+<div id="scotty_logd"><textarea id="log" readonly="1"></textarea></div>
 <script type="text/javascript" src="res/index.js"></script>
 <script type="text/javascript">
 

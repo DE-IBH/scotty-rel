@@ -1,11 +1,15 @@
-#scotty_about {
+#scotty_about_popup {
     display: none;
     position: absolute;
     margin: auto;
     padding: 1em;
     width: 550px;
     height: 400px;
-    background: #a0a0a0;
+    background: white;
+    border: 1px solid black;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
 }
 
 #scotty_chart {
@@ -17,12 +21,22 @@
     width: 300px;
 }
 
+#scotty_about {
+    float: right;
+    background-color: #a9adbe;
+    padding: 2px 3px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 #scotty_hb {
     float: right;
     width: 14px;
     height: 14px;
     background: #7f0000;
     margin-left: 7px;
+    margin-top: 3px;
+    margin-right: 10px;
 }
 
 td.scotty_chart_title {
@@ -36,23 +50,28 @@ td.scotty_chart_value {
 ul.nav {
     list-style:none;
     margin:0;
-    padding:0;
+    padding:0px 10px;
+    background-color: 0;
+    height: 20px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 ul.nav li {
-    display:inline;
+    display: inline;
 }
 
 ul.nav li a {
-    padding:3px 5px;
-    background-color:#ccc;
-    color:#000;
-    text-decoration:none;
+    padding: 2px 3px;
+    font-size: 16px;
+    text-decoration: none;
+    color: white;
 }
 
 ul.nav li a.selected, ul.nav li a:hover {
-    background-color:#333;
-    color:#fff;padding-top:7px;
+    background-color: #a9adbe;
+    color: 0;
 }
 
 ul.nav li a:focus {
@@ -62,5 +81,29 @@ ul.nav li a:focus {
 div.svgview {
     width: 100%;
     height: 80%;
-    border: 1px solid #484;
+}
+
+#scotty_logd {
+    width: 100%;
+    height: 15%;
+    border: 1px solid #000000;
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#log {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    background: none;
+    color: #404040;
+}
+
+body {
+    background-color: #a9adbe;
 }
