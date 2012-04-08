@@ -1,3 +1,12 @@
+#scotty_about {
+    display: none;
+    position: absolute;
+    margin: auto;
+    padding: 1em;
+    width: 550px;
+    height: 400px;
+    background: #a0a0a0;
+}
 
 ul.nav {
     list-style:none;

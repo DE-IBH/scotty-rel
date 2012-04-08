@@ -11,7 +11,33 @@
 <script type="text/javascript" src="web-socket-js/web_socket.js"></script>
 </head>
 <body>
-<div style="float: right"><small><a href="https://github.com/liske/scotty-rel/" target="_blank" style="text-decoration: none">Scotty RELOADED</a></small></div>
+<div id="scotty_about">
+<span style="float: right"><a href="javascript:scotty_about();" style="text-decoration: none">x</a></span>
+<h1>Scotty RELOADED</h1>
+<pre style="text-align: left">
+Author:
+  Thomas Liske &lt;<a href="mailto:thomas@fiasko-nw.net">thomas@fiasko-nw.net</a>&gt;
+
+Copyright Holder:
+  2012 (C) Thomas Liske [<a href="http://fiasko-nw.net/~thomas/">http://fiasko-nw.net/~thomas/</a>]
+
+License:
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this package; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+</pre>
+</div>
+<div style="float: right"><small><a href="javascript:scotty_about();" style="text-decoration: none">Scotty RELOADED</a></small></div>
 <div class="tabs">
     <ul class="nav">
 {

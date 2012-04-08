@@ -46,6 +46,11 @@ function log(msg) {
     $('#log').scrollTop($('#log')[0].scrollHeight - $('#log').height());
 }
 
+function scotty_about() {
+log($('#scotty_about').position());
+    $('#scotty_about').toggle();
+}
+
 var ws;
 var idmap;
 var ridmap = new Object();
