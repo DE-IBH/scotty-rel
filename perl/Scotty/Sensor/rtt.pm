@@ -55,7 +55,10 @@ sub series() {
     return {
 	label => ['rtt', 'pl'],
 	interval => 5,
-	units => ['ms', '%'],
+	unit => ['ms', '%'],
+	color => ['black', 'red'],
+	min => [0, 0],
+	max => [300, 100],
     };
 }
 

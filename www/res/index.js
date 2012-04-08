@@ -124,7 +124,8 @@ function scotty_adddata(key, value) {
 	series[key] = new Array(60);
     }
 
-    series[key].push(JSON.parse("[" + value + "]"));
+    var v = JSON.parse("[" + value + "]");
+    series[key].push(v);
     if(series[key].length > 60) {
 	series[key].shift();
     }
@@ -150,19 +151,24 @@ function scotty_updatesvg(view, redraw) {
 	    }
 
 	    var chart = svgcharts[view][ridmap[chartid]];
+	    var dx = (chart.width - 4) / 60;
+	    var ox = chart.x + 2 + dx;
+	    var oy = chart.y + chart.height - 2;
+	    var my = chart.height - 4;
 	    for(idx in services[service].label) {
 		var points = new Array();
-		var dx = chart.width / 60;
-		var ox = chart.x;
-		var oy = chart.y + chart.height;
+		var fy = my / services[service].max[idx];
+		var last;
 		for(var i=0; i < 60; i++) {
 		    if(typeof series[chartid][i] != "undefined") {
 			var v = series[chartid][i][idx];
-			if(typeof v != "undefined") {
-			    points.push([ox, oy - v]);
-			}
+			last = v;
+			if(typeof v == "undefined")
+			    v = 0;
+			
+			v *= fy;
+			points.push([ox + dx*i, oy - (v < my ? v : my)]);
 		    }
-		    ox += dx;
 		}
 
 		if(typeof chart.line == "undefined") {
@@ -172,7 +178,28 @@ function scotty_updatesvg(view, redraw) {
 		if(typeof chart.line[idx] != "undefined") {
 		    svg.remove(chart.line[idx]);
 		}
-		chart.line[idx] = svg.polyline(points, {stroke: 'red', strokeWidth: 2, fill: 'none'});
+		chart.line[idx] = svg.polyline(points, {stroke: services[service].color[idx], strokeWidth: 2, fill: 'none'});
+
+
+		if(typeof chart.cval == "undefined") {
+		    chart.cval = new Array();
+		}
+
+		if(typeof chart.cval[idx] != "undefined") {
+		    chart.cval[idx].textContent = last + services[service].unit[idx];
+		}
+		else {
+		    chart.cval[idx] = svg.text(
+			chart.x + chart.width - 2, chart.y + (parseInt(idx)+1)*10,
+			last + services[service].unit[idx],
+			{
+			    fill: 'white',
+			    fontSize: '9px',
+			    stroke: services[service].color[idx],
+			    textAnchor: 'end',
+			}
+		    );
+		}
 	    }
 	}
     }
@@ -187,7 +214,7 @@ function scotty_inChart(rect) {
 
     var data = new Array();
     for(l in services[descr[1]].label) {
-	data.push(services[descr[1]].label[l] + "(" + services[descr[1]].units[l] + ")");
+	data.push(services[descr[1]].label[l] + "(" + services[descr[1]].unit[l] + ")");
     }
     $('#sc_data').text(data.join(', '));
 
