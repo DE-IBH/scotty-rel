@@ -8,6 +8,14 @@
     background: #a0a0a0;
 }
 
+#scotty_hb {
+    float: right;
+    width: 14px;
+    height: 14px;
+    background: #7f0000;
+    margin-left: 7px;
+}
+
 ul.nav {
     list-style:none;
     margin:0;

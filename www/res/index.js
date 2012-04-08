@@ -61,6 +61,7 @@ var svgdirty = new Object();
 var svgcharts = new Object();
 var viewstoload = new Array();
 var viewsloaded = new Array();
+var flashTO;
 
 function scotty_init() {
     var wsurl = window.location.toString().replace(/^http/i, "ws");
@@ -73,6 +74,7 @@ function scotty_init() {
 
     ws.onopen = function() {
         log("[WS] open");
+        $('#scotty_hb').css("background", "yellow");
     };
     ws.onmessage = function(e) {
         var m = JSON.parse(e.data);
@@ -96,22 +98,24 @@ function scotty_init() {
 		    }
 		}
 		break;
-	    case "d":
-		for(var key in m[1]) {
-		    scotty_adddata(key, m[1][key]);
+	    default:
+		clearTimeout(flashTO);
+		$('#scotty_hb').css("background", "#00ff00");
+		for(var key in m) {
+		    scotty_adddata(key, m[key]);
 		}
 		scotty_updatesvg(window.CURRENT_VIEW);
-		break;
-	    default:
-		log("[WS] '" + m[0] + "' unkown");
+		flashTO = setTimeout("$('#scotty_hb').css('background', '#007f00');", 150);
 		break;
         }
     };
     ws.onclose = function() {
         log("[WS] closed");
+	$('#scotty_hb').css("background", "#7f0000");
     };
     ws.onerror = function() {
         log("[WS] failed");
+	$('#scotty_hb').css("background", "#ff0000");
     };
 }
 
@@ -142,7 +146,7 @@ function scotty_updatesvg(view, redraw) {
 	if(typeof svgcharts[view][ridmap[chartid]] != "undefined") {
 	    var service = ridmap[chartid].split('_')[1];
 	    if(typeof services[service] == "undefined") {
-		log("Unkown service '" + service + "' (chart '" + ridmap[chartid] + "')!");
+		log("Unknown service '" + service + "' (chart '" + ridmap[chartid] + "')!");
 	    }
 
 	    var chart = svgcharts[view][ridmap[chartid]];
