@@ -172,7 +172,7 @@ function scotty_updatesvg(view, redraw) {
 		if(typeof chart.line[idx] != "undefined") {
 		    svg.remove(chart.line[idx]);
 		}
-		chart.line[idx] = svg.polyline(points, {stroke: 'red', strokeWidth: 2});
+		chart.line[idx] = svg.polyline(points, {stroke: 'red', strokeWidth: 2, fill: 'none'});
 	    }
 	}
     }
