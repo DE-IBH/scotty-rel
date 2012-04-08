@@ -29,7 +29,7 @@ $(function () {
     $('div.tabs ul.nav a').click(function () {
         tabDivs.hide().filter(this.hash).show();
 
-        $('div.tabs ul.tabNavigation a').removeClass('selected');
+        $('div.tabs ul.nav a').removeClass('selected');
         $(this).addClass('selected');
 
         window.CURRENT_VIEW = this.hash;
