@@ -102,7 +102,7 @@ sub worker {
 		}
 	    }
 
-	    print $wh encode_json(['d', \%res])."\n";
+	    print $wh encode_json(\%res)."\n";
 	}
     }
 }
