@@ -37,6 +37,7 @@ License:
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 </pre>
 </div>
+<div id="scotty_hb"></div>
 <div style="float: right"><small><a href="javascript:scotty_about();" style="text-decoration: none">Scotty RELOADED</a></small></div>
 <div class="tabs">
     <ul class="nav">
