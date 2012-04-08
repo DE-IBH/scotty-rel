@@ -181,6 +181,16 @@ function scotty_updatesvg(view, redraw) {
 }
 
 function scotty_inChart(rect) {
+    var chart = svgcharts[window.CURRENT_VIEW][rect.id];
+    var descr = rect.id.split('_');
+    $('#sc_host').text(descr[0]);
+
+    var data = new Array();
+    for(l in services[descr[1]].label) {
+	data.push(services[descr[1]].label[l] + "(" + services[descr[1]].units[l] + ")");
+    }
+    $('#sc_data').text(data.join(', '));
+
     $('#scotty_chart').show();
 }
 
