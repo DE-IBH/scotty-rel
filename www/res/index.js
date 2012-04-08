@@ -47,8 +47,12 @@ function log(msg) {
 }
 
 function scotty_about() {
-log($('#scotty_about').position());
-    $('#scotty_about').toggle();
+    var popup = $('#scotty_about_popup');
+    popup.offset({
+	top: ($(document).height() -  popup.height())/2,
+	left: ($(document).width() -  popup.width())/2,
+    });
+    popup.toggle();
 }
 
 var ws;
