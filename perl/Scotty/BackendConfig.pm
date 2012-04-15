@@ -30,18 +30,19 @@ use strict;
 use warnings;
 
 sub parse_config() {
-	my ($xml_cfgfile) = @_;
-	die "Usage: $0 <views.xml>\n" unless (defined($xml_cfgfile));
-	die "Could not read views XML file!\n" unless (-r $xml_cfgfile);
+	my ($confdir) = @_;
+	die "Usage: $0 <config directory>\n" unless (defined($confdir));
+	die "Config directory invalid: $confdir\n" unless (-d $confdir);
+	die "Could not read views XML file ($confdir/views.xml)!\n" unless (-r "$confdir/views.xml");
 
 	my $xml_parser = XML::LibXML->new();
-	my $xml_dom = $xml_parser->parse_file($xml_cfgfile);
+	my $xml_dom = $xml_parser->parse_file("$confdir/views.xml");
 
-	&parse_services($xml_dom, '//service');
+	&parse_services($confdir, $xml_dom, '//service');
 }
 
 sub parse_services() {
-	my ($ctx, $xpath) = @_;
+	my ($confdir, $ctx, $xpath) = @_;
 
 	my $res = $ctx->findnodes($xpath);
 	die "config file: empty XPath node list: $xpath\n" unless ($res->isa('XML::LibXML::NodeList'));

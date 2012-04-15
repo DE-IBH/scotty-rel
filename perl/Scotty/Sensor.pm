@@ -29,19 +29,19 @@ use warnings;
 use Scotty::IDMapper;
 use Event;
 
-my %sensors;
+my %services;
 my %series;
 my %pipes;
 my $idmap = Scotty::IDMapper->new();
 
 sub new {
-    my ($class, $oclass) = @_;
+    my ($class, $oclass, $service) = @_;
 
     $oclass =~ /::([^:]+)$/;
 
     my $self = {
 	_class => $oclass,
-	service => $1,
+	service => $service,
     };
 
     bless $self, $class;
@@ -49,25 +49,25 @@ sub new {
 }
 
 sub add {
-    my ($sensor, $host, @params) = @_;
+    my ($service, $host, @params) = @_;
 
-    unless(exists($sensors{$sensor})) {
-	eval("require Scotty::Sensor::$sensor;");
+    unless(exists($services{$service})) {
+	eval("require Scotty::Sensor::$service;");
 	die($@) if $@;
 
-	eval("\$sensors{\$sensor} = Scotty::Sensor::${sensor}->new();");
+	eval("\$services{\$service} = Scotty::Sensor::${service}->new(\$service);");
 	die($@) if $@;
 
-	$series{$sensor} = $sensors{$sensor}->series();
+	$series{$service} = $services{$service}->series();
     }
 
-    $sensors{$sensor}->register($idmap, $host, @params);
+    $services{$service}->register($idmap, $host, @params);
 }
 
 sub start_worker() {
     $main::logger->info("Forking working processes...");
-    foreach my $sensor (keys %sensors) {
-	$sensors{$sensor}->worker();
+    foreach my $service (keys %services) {
+	$services{$service}->worker();
     }
 }
 

@@ -34,8 +34,8 @@ use JSON;
 our @ISA = qw(Scotty::Sensor);
 
 sub new {
-    my ($class) = @_;
-    my $self = Scotty::Sensor->new($class);
+    my ($class, $service) = @_;
+    my $self = Scotty::Sensor->new($class, $service);
 
     bless $self, $class;
     return $self;
@@ -46,7 +46,7 @@ sub register {
 
     $self->{idmap} = $idmap;
     $self->{hosts}->{$host} = 1;
-    $main::logger->info("register: $host");
+    $main::logger->info("register $self->{service}: $host");
 }
 
 sub series() {
