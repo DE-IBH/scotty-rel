@@ -54,13 +54,14 @@ sub add {
     unless(exists($services{$service})) {
 	die "Service config file '$srvfile' not found!\n" unless(-r $srvfile);
 	my $sdom = $xml_parser->parse_file($srvfile);
+	my $sensor = $sdom->findvalue("/service/sensor/\@name");
+	die "Service $service did not have a sensor name!\n" unless(defined($sensor));
 	my %config;
-	my $sensor = $service;
 
-	eval("require Scotty::Sensor::$service;");
+	eval("require $sensor;");
 	die($@) if $@;
 
-	eval("\$services{\$service} = Scotty::Sensor::${sensor}->new(\$service, \%config);");
+	eval("\$services{\$service} = ${sensor}->new(\$service, \%config);");
 	die($@) if $@;
 
 	$series{$service} = $services{$service}->series();
