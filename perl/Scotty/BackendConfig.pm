@@ -38,11 +38,11 @@ sub parse_config() {
 	my $xml_parser = XML::LibXML->new();
 	my $xml_dom = $xml_parser->parse_file("$confdir/views.xml");
 
-	&parse_services($confdir, $xml_dom, '//service');
+	&parse_services($confdir, $xml_parser, $xml_dom, '//service');
 }
 
 sub parse_services() {
-	my ($confdir, $ctx, $xpath) = @_;
+	my ($confdir, $xml_parser, $ctx, $xpath) = @_;
 
 	my $res = $ctx->findnodes($xpath);
 	die "config file: empty XPath node list: $xpath\n" unless ($res->isa('XML::LibXML::NodeList'));
@@ -50,9 +50,10 @@ sub parse_services() {
 	foreach my $nctx ($res->get_nodelist) {
 		my $host = $nctx->findvalue("../\@name");
 		my $service = lc($nctx->findvalue("\@name"));
-		my $params = $nctx->findvalue("\@params");
+		my @params = split(/!/, $nctx->findvalue("\@params"));
+		my $srvfile = "$confdir/services/$service.xml";
 
-		Scotty::Sensor::add($service, $host, $params);
+		Scotty::Sensor::add($srvfile, $service, $host, $xml_parser, \@params);
 	}
 }
 

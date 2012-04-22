@@ -49,19 +49,24 @@ sub new {
 }
 
 sub add {
-    my ($service, $host, @params) = @_;
+    my ($srvfile, $service, $host, $xml_parser, $params) = @_;
 
     unless(exists($services{$service})) {
+	die "Service config file '$srvfile' not found!\n" unless(-r $srvfile);
+	my $sdom = $xml_parser->parse_file($srvfile);
+	my %config;
+	my $sensor = $service;
+
 	eval("require Scotty::Sensor::$service;");
 	die($@) if $@;
 
-	eval("\$services{\$service} = Scotty::Sensor::${service}->new(\$service);");
+	eval("\$services{\$service} = Scotty::Sensor::${sensor}->new(\$service, \%config);");
 	die($@) if $@;
 
 	$series{$service} = $services{$service}->series();
     }
 
-    $services{$service}->register($idmap, $host, @params);
+    $services{$service}->register($idmap, $host, $params);
 }
 
 sub start_worker() {
