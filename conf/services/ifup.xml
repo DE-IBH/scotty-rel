@@ -1,0 +1,7 @@
+<!--
+    Service: SNMP Interface Operational State
+-->
+<service>
+    <sensor name="Scotty::Sensor::snmp">
+    </sensor>
+</service>
