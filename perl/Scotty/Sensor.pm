@@ -54,9 +54,14 @@ sub add {
     unless(exists($services{$service})) {
 	die "Service config file '$srvfile' not found!\n" unless(-r $srvfile);
 	my $sdom = $xml_parser->parse_file($srvfile);
+
 	my $sensor = $sdom->findvalue("/service/sensor/\@name");
 	die "Service $service did not have a sensor name!\n" unless(defined($sensor));
+
 	my %config;
+	foreach my $ctx ($sdom->findnodes("/service/sensor/config")->get_nodelist) {
+		$config{$ctx->findvalue("\@key")} = $ctx->findvalue("\@value");
+	}
 
 	eval("require $sensor;");
 	die($@) if $@;
