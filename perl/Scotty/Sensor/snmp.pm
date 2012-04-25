@@ -33,7 +33,7 @@ use SNMP;
 our @ISA = qw(Scotty::Sensor);
 
 sub new {
-    my ($class, $service) = @_;
+    my ($class, $service, $config) = @_;
     my $self = Scotty::Sensor->new($class, $service);
 
     bless $self, $class;
