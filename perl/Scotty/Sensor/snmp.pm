@@ -36,6 +36,21 @@ sub new {
     my ($class, $service, $config) = @_;
     my $self = Scotty::Sensor->new($class, $service);
 
+    my @copts = qw(oid label color unit sminx smax state);
+    my $len;
+    foreach my $copt (@copts) {
+	die "Config option $copt not set!\n"
+	    unless(defined($config->{$copt}));
+
+	$self->{query}->{$copt} = split(/!/, $config->{$copt});
+	unless(defined($len)) {
+	    $len = $#{ $self->{query}->{$copt} };
+	}
+	elsif ( $#{ $self->{query}->{$copt} } != $len ) {
+	    die "Config option value $copt is invalid!\n";
+	}
+    }
+
     bless $self, $class;
     return $self;
 }
@@ -52,12 +67,12 @@ sub series() {
     my ($self) = @_;
 
     return {
-	label => ['rtt', 'pl'],
+	label => $self->{query}->{label},
 	interval => 5,
-	unit => ['ms', '%'],
-	color => ['black', 'red'],
-	min => [0, 0],
-	max => [300, 100],
+	unit => $self->{query}->{unit},
+	color => $self->{query}->{color},
+	min => $self->{query}->{smin},
+	max => $self->{query}->{smax},
     };
 }
 
