@@ -1,7 +1,9 @@
 <!--
     Service: ICMP Echo Request Round Trip Time
+    Parameters:
+	%1%	label (default: rtt)
 -->
-<service>
+<service label="%1|rtt%">
     <sensor name="Scotty::Sensor::rtt">
     </sensor>
 </service>

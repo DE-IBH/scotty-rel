@@ -1,7 +1,20 @@
 <!--
     Service: SNMP Interface Operational State
+    Parameters:
+	%1%	label
+	%2%	ifIndex
+	%3%	down state
+	%4%	up state
 -->
-<service>
+<service label="%1%">
     <sensor name="Scotty::Sensor::snmp">
+	<config>
+	    <status>
+		<oid>IF-MIB::ifOperStatus.%2%</oid>
+		<label>Status</label>
+		<monitor eval="!= 2" state="%3%"/>
+		<monitor eval="== 2" state="%4%"/>
+	    </status>
+	</config>
     </sensor>
 </service>

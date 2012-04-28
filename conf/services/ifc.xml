@@ -1,7 +1,0 @@
-<!--
-    Service: SNMP Interface Counters
--->
-<service>
-    <sensor name="Scotty::Sensor::snmp">
-    </sensor>
-</service>
