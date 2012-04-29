@@ -71,19 +71,32 @@ sub get_config($$) {
 
 sub register {
     my ($self, $idmap, $host, $params) = @_;
-
     $self->{idmap} = $idmap;
     my $href = $self->{hosts}->{$host};
 
     # create SNMP session
     $href->{session} = new SNMP::Session(
 	DestHost => $host,
+	Community => 'public',
+	Version => '2c',
 	UseSprintValue => 1,
     ) unless(defined($href->{session}));
 
-    $href->{varlist}->{$idmap} = @{$self->{query}->{oid}};
-    
-    # $params;
+    my $id = $self->{idmap}->getID("${host}_$self->{service}_$params");
+
+    $href->{params}->{$id} = $params;
+    my @oids;
+    foreach my $oid (@{$self->{query}->{oid}}) {
+	while($oid =~ /%(\d+)(|([^%]+))?%/) {
+	    my ($i, $alt) = ($1, $3);
+	    my $val = ($i - 1 <= $#{$params} ? ${$params}[$i - 1] : $alt);
+	    $oid =~ s/%$i(|[^%]+)?%/$val/;
+	}
+	push(@oids, $oid);
+    }
+    $href->{varlist}->{ $id } = \@oids;
+    $self->{hosts}->{$host} = $href unless(defined($self->{hosts}->{$host}));
+
     $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
 }
 
@@ -109,15 +122,27 @@ sub targets {
 sub worker {
     my ($self) = @_;
 
-    foreach my $host (keys %{$self->{hosts}}) {
-	$self->{idmap}->getID("${host}_$self->{service}");
-    }
-
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
+	foreach my $host (keys %{$self->{hosts}}) {
+	    $self->{hosts}->{$host}->{vlobj} = new SNMP::VarList(
+		values %{ $self->{hosts}->{$host}->{varlist} }
+	    );
+	}
+
 	while(1) {
-	    sleep(60);
+	    foreach my $host (keys %{$self->{hosts}}) {
+		my $href = $self->{hosts}->{$host};
+		my @ret = $href->{session}->getnext( $href->{vlobj} );
+		print STDERR "SNMP ERROR: $href->{session}->{ErrorStr}\n" if ($href->{session}->{ErrorStr});
+		print STDERR Dumper($href->{vlobj});
+		print STDERR Dumper(\@ret);
+#		foreach my $id (keys %{ $href->{varlist} }) {
+#		    print STDERR "$host => ",join(', ', @{ $self->{hosts}->{$host}->{varlist}->{$id} }),"\n";
+#		}
+	    }
 	    #print $wh encode_json()."\n";
+	    sleep(5);
 	}
     }
 }
