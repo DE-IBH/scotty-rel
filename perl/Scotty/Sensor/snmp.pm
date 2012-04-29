@@ -86,15 +86,17 @@ sub register {
 
     $href->{params}->{$id} = $params;
     my @oids;
-    foreach my $oid (@{$self->{query}->{oid}}) {
+    foreach my $o (@{$self->{query}->{oid}}) {
+	my $oid = $o;
 	while($oid =~ /%(\d+)(|([^%]+))?%/) {
 	    my ($i, $alt) = ($1, $3);
-	    my $val = ($i - 1 <= $#{$params} ? ${$params}[$i - 1] : $alt);
+	    my $val = ($i - 1 <= $#{$params} ? $params->[$i - 1] : $alt);
 	    $oid =~ s/%$i(|[^%]+)?%/$val/;
 	}
-	push(@oids, $oid);
+	push(@oids, [$oid]);
     }
-    $href->{varlist}->{ $id } = \@oids;
+    push(@oids, @{ $href->{oids} }) if(exists($href->{oids}));
+    $href->{oids} = \@oids;
     $self->{hosts}->{$host} = $href unless(defined($self->{hosts}->{$host}));
 
     $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
@@ -126,20 +128,16 @@ sub worker {
     if(defined($wh)) {
 	foreach my $host (keys %{$self->{hosts}}) {
 	    $self->{hosts}->{$host}->{vlobj} = new SNMP::VarList(
-		values %{ $self->{hosts}->{$host}->{varlist} }
+		@{$self->{hosts}->{$host}->{oids}}
 	    );
 	}
 
 	while(1) {
 	    foreach my $host (keys %{$self->{hosts}}) {
 		my $href = $self->{hosts}->{$host};
-		my @ret = $href->{session}->getnext( $href->{vlobj} );
+		my @ret = $href->{session}->get( $href->{vlobj} );
 		print STDERR "SNMP ERROR: $href->{session}->{ErrorStr}\n" if ($href->{session}->{ErrorStr});
-		print STDERR Dumper($href->{vlobj});
 		print STDERR Dumper(\@ret);
-#		foreach my $id (keys %{ $href->{varlist} }) {
-#		    print STDERR "$host => ",join(', ', @{ $self->{hosts}->{$host}->{varlist}->{$id} }),"\n";
-#		}
 	    }
 	    #print $wh encode_json()."\n";
 	    sleep(5);
