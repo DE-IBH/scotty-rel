@@ -73,7 +73,17 @@ sub register {
     my ($self, $idmap, $host, $params) = @_;
 
     $self->{idmap} = $idmap;
-    $self->{hosts}->{$host} = $params;
+    my $href = $self->{hosts}->{$host};
+
+    # create SNMP session
+    $href->{session} = new SNMP::Session(
+	DestHost => $host,
+	UseSprintValue => 1,
+    ) unless(defined($href->{session}));
+
+    $href->{varlist}->{$idmap} = @{$self->{query}->{oid}};
+    
+    # $params;
     $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
 }
 
