@@ -1,0 +1,37 @@
+<!--
+    Service: SNMP Interface Counters (64bit), customized speed
+    Parameters:
+	%1%	label
+	%2%	ifIndex
+	%3%	ifSpeed
+	%4%	down state
+	%5%	up state
+-->
+<service label="%1%">
+    <sensor name="Scotty::Sensor::snmp">
+	<config>
+	    <in>
+		<oid>IF-MIB::ifHCInOctets.%2%</oid>
+		<label>In</label>
+		<color>green</color>
+		<unit>Bps</unit>
+		<smin>0</smin>
+		<smax>%3%</smax>
+	    </in>
+	    <out>
+		<oid>IF-MIB::ifHCOutOctets.%2%</oid>
+		<label>Out</label>
+		<color>blue</color>
+		<unit>Bps</unit>
+		<smin>0</smin>
+		<smax>%3%</smax>
+	    </out>
+	    <status>
+		<oid>IF-MIB::ifOperStatus.%2%</oid>
+		<label>Status</label>
+		<monitor eval="!= 2" state="%4%"/>
+		<monitor eval="== 2" state="%5%"/>
+	    </status>
+	</config>
+    </sensor>
+</service>
