@@ -36,23 +36,37 @@ sub new {
     my ($class, $service, $config) = @_;
     my $self = Scotty::Sensor->new($class, $service);
 
-    my @copts = qw(oid label color unit sminx smax state);
-    my $len;
-    foreach my $copt (@copts) {
-	die "Config option $copt not set!\n"
-	    unless(defined($config->{$copt}));
-
-	$self->{query}->{$copt} = split(/!/, $config->{$copt});
-	unless(defined($len)) {
-	    $len = $#{ $self->{query}->{$copt} };
-	}
-	elsif ( $#{ $self->{query}->{$copt} } != $len ) {
-	    die "Config option value $copt is invalid!\n";
-	}
-    }
+    get_config($self, $config);
 
     bless $self, $class;
     return $self;
+}
+
+sub get_config($$) {
+    my ($self, $config) = @_;
+
+    foreach my $node ($config->get_nodelist()) {
+	my %config = (
+	    oid => undef,
+	    label => undef,
+	    color => 'black',
+	    unit => '',
+	    min => 0,
+	    max => undef,
+	    monitor => undef,
+	);
+
+	foreach my $key (keys %config) {
+	    my $value = $node->findvalue($key);
+	    $config{$key} = $value if(defined($value));
+	
+	    push(@{$self->{query}->{$key}}, (defined($value) ? $value : $config{$key}));
+	}
+
+	die "Config value 'oid' not defined!\n"
+	    unless(defined($config{oid}));
+
+    }
 }
 
 sub register {
@@ -60,7 +74,7 @@ sub register {
 
     $self->{idmap} = $idmap;
     $self->{hosts}->{$host} = $params;
-    $main::logger->info("register $self->{service}: $host ".join(', ', %{$params}));
+    $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
 }
 
 sub series() {
@@ -71,8 +85,8 @@ sub series() {
 	interval => 5,
 	unit => $self->{query}->{unit},
 	color => $self->{query}->{color},
-	min => $self->{query}->{smin},
-	max => $self->{query}->{smax},
+	min => $self->{query}->{min},
+	max => $self->{query}->{max},
     };
 }
 
@@ -92,7 +106,8 @@ sub worker {
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
 	while(1) {
-	    print $wh encode_json()."\n";
+	    sleep(60);
+	    #print $wh encode_json()."\n";
 	}
     }
 }

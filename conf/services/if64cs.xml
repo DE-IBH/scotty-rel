@@ -15,22 +15,21 @@
 		<label>In</label>
 		<color>green</color>
 		<unit>Bps</unit>
-		<smin>0</smin>
-		<smax>%3%</smax>
+		<min>0</min>
+		<max>%3%</max>
 	    </in>
 	    <out>
 		<oid>IF-MIB::ifHCOutOctets.%2%</oid>
 		<label>Out</label>
 		<color>blue</color>
 		<unit>Bps</unit>
-		<smin>0</smin>
-		<smax>%3%</smax>
+		<min>0</min>
+		<max>%3%</max>
 	    </out>
 	    <status>
 		<oid>IF-MIB::ifOperStatus.%2%</oid>
 		<label>Status</label>
-		<monitor eval="!= 2" state="%4%"/>
-		<monitor eval="== 2" state="%5%"/>
+		<monitor>(%v% != 2 ? %3% : %4%)</monitor>
 	    </status>
 	</config>
     </sensor>

@@ -58,15 +58,12 @@ sub add {
 	my $sensor = $sdom->findvalue("/service/sensor/\@name");
 	die "Service $service did not have a sensor name!\n" unless(defined($sensor));
 
-	my %config;
-	foreach my $ctx ($sdom->findnodes("/service/sensor/config")->get_nodelist) {
-		$config{$ctx->findvalue("\@key")} = $ctx->findvalue("\@value");
-	}
+	my $config = $sdom->findnodes("/service/sensor/config/*");
 
 	eval("require $sensor;");
 	die($@) if $@;
 
-	eval("\$services{\$service} = ${sensor}->new(\$service, \%config);");
+	eval("\$services{\$service} = ${sensor}->new(\$service, \$config);");
 	die($@) if $@;
 
 	$series{$service} = $services{$service}->series();
