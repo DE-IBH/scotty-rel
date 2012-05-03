@@ -79,12 +79,12 @@ sub register {
 	DestHost => $host,
 	Community => 'public',
 	Version => '2c',
-	UseSprintValue => 1,
+	UseSprintValue => 0,
+	UseNumeric => 1,
     ) unless(defined($href->{session}));
 
     my $id = $self->{idmap}->getID("${host}_$self->{service}_$params");
 
-    $href->{params}->{$id} = $params;
     my @oids;
     foreach my $o (@{$self->{query}->{oid}}) {
 	my $oid = $o;
@@ -92,9 +92,13 @@ sub register {
 	    my ($i, $alt) = ($1, $3);
 	    my $val = ($i - 1 <= $#{$params} ? $params->[$i - 1] : $alt);
 	    $oid =~ s/%$i(|[^%]+)?%/$val/;
+	    $oid = &SNMP::translateObj($oid) unless($oid =~ /^[\d.]+$/);
 	}
 	push(@oids, [$oid]);
     }
+    my @oids_ = @oids;
+    $href->{oidmap}->{$id} = \@oids_;
+
     push(@oids, @{ $href->{oids} }) if(exists($href->{oids}));
     $href->{oids} = \@oids;
     $self->{hosts}->{$host} = $href unless(defined($self->{hosts}->{$host}));
@@ -133,13 +137,21 @@ sub worker {
 	}
 
 	while(1) {
+	    my %res;
 	    foreach my $host (keys %{$self->{hosts}}) {
 		my $href = $self->{hosts}->{$host};
 		my @ret = $href->{session}->get( $href->{vlobj} );
 		print STDERR "SNMP ERROR: $href->{session}->{ErrorStr}\n" if ($href->{session}->{ErrorStr});
+		print STDERR Dumper($href->{vlobj});
 		print STDERR Dumper(\@ret);
+		    foreach my $id (keys %{ $href->{oidmap} }) {
+			my @res;
+			foreach my $oid (@{ $href->{oidmap}->{$id} }) {
+			}
+			$res{"$id"} = \@res;
+		    }
 	    }
-	    #print $wh encode_json()."\n";
+	    print $wh encode_json(\%res)."\n";
 	    sleep(5);
 	}
     }
