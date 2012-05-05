@@ -83,8 +83,7 @@ sub register {
 	UseNumeric => 1,
     ) unless(defined($href->{session}));
 
-    my $id = $self->{idmap}->getID("${host}_$self->{service}_$params");
-
+    my $id = $self->{idmap}->getID("${host}_$self->{service}#".join('_', @{$params}));
     my @oids;
     foreach my $o (@{$self->{query}->{oid}}) {
 	my $oid = $o;
@@ -95,12 +94,10 @@ sub register {
 	    $oid = &SNMP::translateObj($oid) unless($oid =~ /^[\d.]+$/);
 	}
 	push(@oids, [$oid]);
+	$href->{oids}->{$oid}++;
     }
-    my @oids_ = @oids;
-    $href->{oidmap}->{$id} = \@oids_;
+    $href->{oidmap}->{$id} = \@oids;
 
-    push(@oids, @{ $href->{oids} }) if(exists($href->{oids}));
-    $href->{oids} = \@oids;
     $self->{hosts}->{$host} = $href unless(defined($self->{hosts}->{$host}));
 
     $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
@@ -131,8 +128,9 @@ sub worker {
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
 	foreach my $host (keys %{$self->{hosts}}) {
-	    $self->{hosts}->{$host}->{vlobj} = new SNMP::VarList(
-		@{$self->{hosts}->{$host}->{oids}}
+	    my $href = $self->{hosts}->{$host};
+	    $href->{vlobj} = new SNMP::VarList(
+		map { [$_] } keys %{$href->{oids}}
 	    );
 	}
 
@@ -142,14 +140,15 @@ sub worker {
 		my $href = $self->{hosts}->{$host};
 		my @ret = $href->{session}->get( $href->{vlobj} );
 		print STDERR "SNMP ERROR: $href->{session}->{ErrorStr}\n" if ($href->{session}->{ErrorStr});
-		print STDERR Dumper($href->{vlobj});
-		print STDERR Dumper(\@ret);
-		    foreach my $id (keys %{ $href->{oidmap} }) {
-			my @res;
-			foreach my $oid (@{ $href->{oidmap}->{$id} }) {
-			}
-			$res{"$id"} = \@res;
+		foreach my $id (keys %{ $href->{oidmap} }) {
+		    my @res;
+		    foreach my $oid (@{ $href->{oidmap}->{$id} }) {
+			push(@res, map {
+			    (${$_}[2] =~ /^-?\d+$/ ? ${$_}[2] : undef)
+			} grep { "${$_}[0].${$_}[1]" eq ${$oid}[0] } @{$href->{vlobj}});
 		    }
+		    $res{"$id"} = \@res;
+		}
 	    }
 	    print $wh encode_json(\%res)."\n";
 	    sleep(5);
