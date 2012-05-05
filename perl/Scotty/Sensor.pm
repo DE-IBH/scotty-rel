@@ -109,18 +109,18 @@ sub targets() {
 sub worker() {
     my ($self) = @_;
 
-    pipe RH, WH;
+    my ($RH, $WH);
+    pipe $RH, $WH;
     my $pid = fork();
     die "Cannot fork!\n" unless(defined($pid));
     if($pid == 0) {
-	close(RH);
-	return *WH;
+	close($RH);
+	return *$WH;
     }
-    close(WH);
-
+    close($WH);
     Event->io(
-	desc => $self->{_oclass},
-	fd => *RH,
+	desc => "$self",
+	fd => *$RH,
 	poll => 'r',
 	cb => \&main::sensor_data,
 	repeat => '1',
