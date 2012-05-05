@@ -28,6 +28,7 @@ use strict;
 use warnings;
 use Scotty::IDMapper;
 use Event;
+use IO::Pipe;
 
 my %services;
 my %series;
@@ -109,18 +110,19 @@ sub targets() {
 sub worker() {
     my ($self) = @_;
 
-    my ($RH, $WH);
-    pipe $RH, $WH;
+    my $pipe = IO::Pipe->new();
     my $pid = fork();
     die "Cannot fork!\n" unless(defined($pid));
     if($pid == 0) {
-	close($RH);
-	return *$WH;
+	$pipe->writer();
+	$pipe->autoflush(1);
+	return $pipe;
     }
-    close($WH);
+    $pipe->reader();
+
     Event->io(
 	desc => "$self",
-	fd => *$RH,
+	fd => $pipe,
 	poll => 'r',
 	cb => \&main::sensor_data,
     );
