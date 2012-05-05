@@ -77,8 +77,9 @@ sub worker {
 
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
-	my $targets = join("\n", keys %{$self->{hosts}}, '');
+	$main::logger->info("worker started");
 
+	my $targets = join("\n", keys %{$self->{hosts}}, '');
 	while(1) {
 	    my ($out, $in, $err);
 	    $err = gensym;

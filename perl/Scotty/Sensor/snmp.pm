@@ -127,6 +127,8 @@ sub worker {
 
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
+	$main::logger->info("worker started");
+
 	foreach my $host (keys %{$self->{hosts}}) {
 	    my $href = $self->{hosts}->{$host};
 	    $href->{vlobj} = new SNMP::VarList(
