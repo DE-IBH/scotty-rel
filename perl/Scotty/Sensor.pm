@@ -123,7 +123,6 @@ sub worker() {
 	fd => *$RH,
 	poll => 'r',
 	cb => \&main::sensor_data,
-	repeat => '1',
     );
 
     return undef;
