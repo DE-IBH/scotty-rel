@@ -50,7 +50,7 @@ sub parse_services() {
 	foreach my $nctx ($res->get_nodelist) {
 		my $host = $nctx->findvalue("../\@name");
 		my $service = lc($nctx->findvalue("\@name"));
-		my @params = split(/!/, $nctx->findvalue("\@params"));
+		my @params = split(/_/, $nctx->findvalue("\@params"));
 		my $srvfile = "$confdir/services/$service.xml";
 
 		Scotty::Sensor::add($srvfile, $service, $host, $xml_parser, \@params);
