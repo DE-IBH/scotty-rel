@@ -83,7 +83,7 @@ sub register {
 	UseNumeric => 1,
     ) unless(defined($href->{session}));
 
-    my $id = $self->{idmap}->getID("${host}_$self->{service}#".join('_', @{$params}));
+    my $id = $self->{idmap}->getID("${host}_$self->{service}_".join('_', @{$params}));
     my @oids;
     foreach my $o (@{$self->{query}->{oid}}) {
 	my $oid = $o;
