@@ -66,6 +66,20 @@ var svgcharts = new Object();
 var viewstoload = new Array();
 var viewsloaded = new Array();
 var flashTO;
+var si_prefs = ['T', 'G', 'M', 'k', '', 'm', 'µ'];
+var si_facts = [ Math.pow(10,12), Math.pow(10,9), Math.pow(10,6), Math.pow(10,3), 1, Math.pow(10,-3), Math.pow(10,-6)];
+
+function scotty_fnum(value, unit) {
+    var j = 4;
+    var f = 1;
+    for(var i = 0; i < si_facts.length; i++) {
+	if(value > si_facts[i]) {
+	    j = i;
+	    break;
+	}
+    }
+    return Math.round(value / si_facts[j]) + si_prefs[j] + unit;
+}
 
 function scotty_init() {
     var wsurl = window.location.toString().replace(/^http/i, "ws");
@@ -138,7 +152,7 @@ function scotty_adddata(key, value) {
 	svgdirty[key] = 1;
     }
     catch(err) {
-	log(ridmap[key] + ": " + err);
+	log(ridmap[key] + ": [" + value + "] => " + err);
     }
 }
 
@@ -195,7 +209,7 @@ function scotty_updatesvg(view, redraw) {
 		}
 
 		if(typeof chart.cval[idx] != "undefined") {
-		    chart.cval[idx].textContent = last + services[service].unit[idx];
+		    chart.cval[idx].textContent = scotty_fnum(last, services[service].unit[idx]);
 		}
 		else {
 		    chart.cval[idx] = svg.text(
