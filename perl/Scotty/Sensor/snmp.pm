@@ -136,6 +136,7 @@ sub worker {
 	    );
 	}
 
+	my %cntrs;
 	while(1) {
 	    my %res;
 	    foreach my $host (keys %{$self->{hosts}}) {
@@ -146,7 +147,21 @@ sub worker {
 		    my @res;
 		    foreach my $oid (@{ $href->{oidmap}->{$id} }) {
 			push(@res, map {
-			    (${$_}[2] =~ /^-?\d+$/ ? ${$_}[2] : undef)
+			    my $v = (${$_}[2] =~ /^-?\d+$/ ? ${$_}[2] : undef);
+			    if(${$_}[3] =~ /^COUNTER/ && defined($v)) {
+				my $k = $id.${$oid}[0];
+				if(exists($cntrs{$k})) {
+				    my $w = $cntrs{$k};
+				    $cntrs{$k} = $v;
+				    $v -= $w;
+				}
+				else {
+				    $cntrs{$k} = $v;
+				    $v = undef;
+				}
+			    }
+
+			    $v;
 			} grep { "${$_}[0].${$_}[1]" eq ${$oid}[0] } @{$href->{vlobj}});
 		    }
 		    $res{"$id"} = \@res;
