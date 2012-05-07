@@ -128,13 +128,18 @@ function scotty_adddata(key, value) {
 	series[key] = new Array(60);
     }
 
-    var v = JSON.parse("[" + value + "]");
-    series[key].push(v);
-    if(series[key].length > 60) {
-	series[key].shift();
-    }
+    try {
+	var v = JSON.parse("[" + value + "]");
+	series[key].push(v);
+	if(series[key].length > 60) {
+	    series[key].shift();
+	}
 
-    svgdirty[key] = 1;
+	svgdirty[key] = 1;
+    }
+    catch(err) {
+	log(ridmap[key] + ": " + err);
+    }
 }
 
 function scotty_updatesvg(view, redraw) {
