@@ -70,7 +70,7 @@ sub get_config($$) {
 }
 
 sub register {
-    my ($self, $idmap, $host, $params) = @_;
+    my ($self, $idmap, $series, $host, $params) = @_;
     $self->{idmap} = $idmap;
     my $href = $self->{hosts}->{$host};
 
@@ -100,13 +100,7 @@ sub register {
 
     $self->{hosts}->{$host} = $href unless(defined($self->{hosts}->{$host}));
 
-    $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
-}
-
-sub series() {
-    my ($self) = @_;
-
-    return {
+    $series->{$id} = {
 	label => $self->{query}->{label},
 	interval => 5,
 	unit => $self->{query}->{unit},
@@ -114,6 +108,8 @@ sub series() {
 	min => $self->{query}->{min},
 	max => $self->{query}->{max},
     };
+
+    $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
 }
 
 sub targets {

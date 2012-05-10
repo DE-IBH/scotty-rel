@@ -42,23 +42,21 @@ sub new {
 }
 
 sub register {
-    my ($self, $idmap, $host, $params) = @_;
+    my ($self, $idmap, $series, $host, $params) = @_;
 
     $self->{idmap} = $idmap;
     $self->{hosts}->{$host} = 1;
     $main::logger->info("register $self->{service}: $host");
-}
 
-sub series() {
-    my ($self) = @_;
+    my $id = $self->{idmap}->getID("${host}_$self->{service}");
 
-    return {
+    $series->{$id} = {
 	label => ['rtt', 'pl'],
 	interval => 5,
 	unit => ['ms', '%'],
 	color => ['black', 'red'],
 	min => [0, 0],
-	max => [300, 100],
+	max => [undef, 100],
     };
 }
 
@@ -70,10 +68,6 @@ sub targets {
 
 sub worker {
     my ($self) = @_;
-
-    foreach my $host (keys %{$self->{hosts}}) {
-	$self->{idmap}->getID("${host}_$self->{service}");
-    }
 
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {

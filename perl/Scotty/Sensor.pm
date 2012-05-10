@@ -66,11 +66,9 @@ sub add {
 
 	eval("\$services{\$service} = ${sensor}->new(\$service, \$config);");
 	die($@) if $@;
-
-	$series{$service} = $services{$service}->series();
     }
 
-    $services{$service}->register($idmap, $host, $params);
+    $services{$service}->register($idmap, \%series, $host, $params);
 }
 
 sub start_worker() {
@@ -93,12 +91,6 @@ sub register {
     my ($self) = @_;
 
     die(${$self}{_class} . " did not override register method!\n");
-}
-
-sub series() {
-    my ($self) = @_;
-
-    die(${$self}{_class} . " did not override series method!\n");
 }
 
 sub targets() {
