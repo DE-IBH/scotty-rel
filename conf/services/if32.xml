@@ -9,22 +9,22 @@
 <service label="%1%">
     <sensor name="Scotty::Sensor::snmp">
 	<config>
-	    <in>
+	    <dataset>
 		<oid>IF-MIB::ifInOctets.%2%</oid>
 		<label>In</label>
 		<color>green</color>
 		<unit>Bps</unit>
 		<min>0</smin>
 		<max>%{IF-MIB::ifSpeed.%2%}%</max>
-	    </in>
-	    <out>
+	    </dataset>
+	    <dataset>
 		<oid>IF-MIB::ifOutOctets.%2%</oid>
 		<label>Out</label>
 		<color>blue</color>
 		<unit>Bps</unit>
 		<min>0</min>
 		<max>${IF-MIB::ifSpeed.%2%}</max>
-	    </out>
+	    </dataset>
 	    <status>
 		<oid>IF-MIB::ifOperStatus.%2%</oid>
 		<label>Status</label>

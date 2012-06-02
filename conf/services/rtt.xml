@@ -5,5 +5,20 @@
 -->
 <service label="%1|rtt%">
     <sensor name="Scotty::Sensor::rtt">
+	<config>
+	    <dataset>
+		<label>RTT</label>
+		<color>black</color>
+		<unit>s</unit>
+		<min>0</min>
+	    </dataset>
+	    <dataset>
+		<label>Loss</label>
+		<color>red</color>
+		<unit>%</unit>
+		<min>0</min>
+		<max>100</max>
+	    </dataset>
+	</config>
     </sensor>
 </service>
