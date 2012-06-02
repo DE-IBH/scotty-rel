@@ -15,7 +15,7 @@
 		<color>green</color>
 		<unit>Bps</unit>
 		<min>0</min>
-		<max>IF-MIB::ifHighSpeed.%2%</max>
+		<max>%{IF-MIB::ifHighSpeed.%2%}%</max>
 	    </in>
 	    <out>
 		<oid>IF-MIB::ifHCOutOctets.%2%</oid>
@@ -23,7 +23,7 @@
 		<color>blue</color>
 		<unit>Bps</unit>
 		<min>0</min>
-		<max>IF-MIB::ifHighSpeed.%2%</max>
+		<max>%{IF-MIB::ifHighSpeed.%2%}%</max>
 	    </out>
 	    <status>
 		<oid>IF-MIB::ifOperStatus.%2%</oid>
