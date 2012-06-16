@@ -40,7 +40,8 @@ use warnings;
 our $opt_l = '127.0.0.1';
 our $opt_p = 1701;
 our $opt_d;
-getopts('l:p:d');
+our $opt_f;
+getopts('l:p:df');
 
 my $mypid = $$;
 my @nodes = ();
@@ -51,9 +52,18 @@ $main::logger = Log::Dispatch->new(callbacks => $logfmt);
 $main::logger->add(
     Log::Dispatch::Screen->new(
 	name => 'console',
-	min_level => ($opt_d ? 'info' : 'notice'),
+	min_level => ($opt_f ? ($opt_d ? 'info' : 'notice') : 'warning'),
     )
 );
+$main::logger->add(
+    Log::Dispatch::Syslog->new(
+	name => 'syslog',
+	min_level => ($opt_d ? 'info' : 'notice'),
+	ident => 'scotty-rel',
+	logopt => 'pid',
+	facility => 'daemon',
+    )
+) unless($opt_f);
 
 $main::json = JSON->new->utf8;
 
