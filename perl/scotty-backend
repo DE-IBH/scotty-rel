@@ -26,7 +26,9 @@
 
 use Scotty::BackendConfig;
 use Event;
-use Scotty::Logging::Syslog;
+use Log::Dispatch;
+use Log::Dispatch::Screen;
+use Log::Dispatch::Syslog;
 use Proc::Daemon;
 use IO::Socket;
 use POSIX qw(mkfifo F_SETFL O_NONBLOCK);
@@ -39,8 +41,15 @@ $SIG{CHLD} = 'IGNORE';
 my $mypid = $$;
 my @nodes = ();
 
-$main::logger = Scotty::Logging::Syslog->new();
-$main::logger->info("starting...");
+my $logfmt = sub { my %p = @_; chomp($p{'message'}); return ("[$p{level}] $p{message}\n"); };
+my $logffile = sub { my %p = @_;  return (scalar localtime())." [$$] $p{message}"; };
+$main::logger = Log::Dispatch->new(callbacks => $logfmt);
+$main::logger->add(
+    Log::Dispatch::Screen->new(
+	name => 'console',
+	min_level => 'info',
+    )
+);
 
 $main::json = JSON->new->utf8;
 
@@ -59,7 +68,7 @@ sub DIE_handler {
     my($signal) = @_;
 
 	if(defined $main::logger) {
-		$main::logger->warning("ERROR: $signal");
+		$main::logger->critical("ERROR: $signal");
 	}
 	else {
 		printf STDERR "ERROR: $signal\n";
@@ -76,7 +85,7 @@ END {
 	if($mypid == $$) {
 		my $m = "terminated (rc=$?)";
 		if(defined $main::logger) {
-			$main::logger->info($m);
+			$main::logger->notice($m);
 		}
 		else {
 			print STDERR "$m\n";
@@ -86,14 +95,16 @@ END {
 
 #Proc::Daemon::Init;
 
+my $opt_l = '127.0.0.1';
+my $opt_p = 1701;
 my $uds = IO::Socket::INET->new(
     Listen => 5,
-    LocalPort => 1701,
-    LocalAddr => '127.0.0.1',
+    LocalPort => $opt_p,
+    LocalAddr => $opt_l,
     Proto => 'tcp',
     ReuseAddr => 1,
-) or die $@;
-$main::logger->info("listening...");
+) or die "$@\n";
+$main::logger->notice("Listening $opt_l:$opt_p...");
 
 $uds->sockopt(F_SETFL, O_NONBLOCK);
 
