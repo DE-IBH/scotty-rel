@@ -135,7 +135,7 @@ $main::logger->notice("Listening $opt_l:$opt_p...");
 $uds->sockopt(F_SETFL, O_NONBLOCK);
 
 Event->io(
-	desc => 'uds',
+	desc => 'client: accept',
 	fd => $uds,
 	poll => 'r',
 	cb => \&accept_handler,

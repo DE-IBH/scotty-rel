@@ -113,7 +113,7 @@ sub worker() {
     $pipe->reader();
 
     Event->io(
-	desc => "$self",
+	desc => "service: $self->{service}",
 	fd => $pipe,
 	poll => 'r',
 	cb => \&main::sensor_data,
