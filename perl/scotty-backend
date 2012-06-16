@@ -26,6 +26,7 @@
 
 use Scotty::BackendConfig;
 use Event;
+use Getopt::Std;
 use Log::Dispatch;
 use Log::Dispatch::Screen;
 use Log::Dispatch::Syslog;
@@ -36,7 +37,10 @@ use JSON;
 use strict;
 use warnings;
 
-$SIG{CHLD} = 'IGNORE';
+our $opt_l = '127.0.0.1';
+our $opt_p = 1701;
+our $opt_d;
+getopts('l:p:d');
 
 my $mypid = $$;
 my @nodes = ();
@@ -47,7 +51,7 @@ $main::logger = Log::Dispatch->new(callbacks => $logfmt);
 $main::logger->add(
     Log::Dispatch::Screen->new(
 	name => 'console',
-	min_level => 'info',
+	min_level => ($opt_d ? 'info' : 'notice'),
     )
 );
 
@@ -79,7 +83,8 @@ sub DIE_handler {
 
 $SIG{__WARN__} = 'WARN_handler';
 $SIG{__DIE__}  = 'DIE_handler';
-$SIG{PIPE}  = 'IGNORE';
+$SIG{PIPE} = 'IGNORE';
+$SIG{CHLD} = 'IGNORE';
 
 END {
 	if($mypid == $$) {
@@ -95,8 +100,6 @@ END {
 
 #Proc::Daemon::Init;
 
-my $opt_l = '127.0.0.1';
-my $opt_p = 1701;
 my $uds = IO::Socket::INET->new(
     Listen => 5,
     LocalPort => $opt_p,
