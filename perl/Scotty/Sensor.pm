@@ -122,4 +122,15 @@ sub worker() {
     return undef;
 }
 
+sub push_hashref($$) {
+    my ($self, $wh, $ref) = @_;
+
+    my @data;
+    foreach my $key (keys %$ref) {
+	push(@data, $key + 0);
+	push(@data, $ref->{$key});
+    }
+    print $wh $main::json->encode(\@data)."\n";
+}
+
 1;

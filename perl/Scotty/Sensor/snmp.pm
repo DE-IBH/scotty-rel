@@ -167,7 +167,7 @@ sub worker {
 		    $res{$id} = \@res;
 		}
 	    }
-	    print $wh $main::json->encode(\%res)."\n";
+	    $self->push_hashref($wh, \%res);
 	    sleep(5);
 	}
     }

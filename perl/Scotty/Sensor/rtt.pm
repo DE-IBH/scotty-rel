@@ -99,7 +99,7 @@ sub worker {
 		}
 	    }
 
-	    print $wh $main::json->encode(\%res)."\n";
+	    $self->push_hashref($wh, \%res);
 	}
     }
 }
