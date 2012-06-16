@@ -143,6 +143,11 @@ sub worker {
 		    foreach my $oid (@{ $href->{oidmap}->{$id} }) {
 			push(@res, map {
 			    my $v = (${$_}[2] =~ /^-?\d+$/ ? ${$_}[2] : undef);
+
+			    if(defined($v) && (${$_}[3] =~ /^(COUNTER|GAUGE|INTEGER)/)) {
+				$v += 0;
+			    }
+
 			    if(${$_}[3] =~ /^COUNTER/ && defined($v)) {
 				my $k = $id.${$oid}[0];
 				if(exists($cntrs{$k})) {
