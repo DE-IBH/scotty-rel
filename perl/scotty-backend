@@ -98,7 +98,7 @@ $SIG{PIPE} = 'IGNORE';
 $SIG{CHLD} = 'IGNORE';
 
 END {
-	if($mypid == $$) {
+	if(defined($mypid) && ($mypid == $$)) {
 		my $m = "terminated (rc=$?)";
 		if(defined $main::logger) {
 			$main::logger->notice($m);
@@ -157,7 +157,6 @@ sub sensor_data {
 }
 
 &Scotty::BackendConfig::parse_config(shift);
-&Scotty::Sensor::start_worker();
 
 unless($opt_f) {
     # daemonize
@@ -174,5 +173,6 @@ unless($opt_f) {
     $main::logger->remove('console');
 }
 
+&Scotty::Sensor::start_worker();
 $main::logger->info("Enter event loop...");
 Event::loop();
