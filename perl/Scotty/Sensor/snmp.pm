@@ -159,7 +159,7 @@ sub worker {
 			    $v;
 			} grep { "${$_}[0].${$_}[1]" eq ${$oid}[0] } @{$href->{vlobj}});
 		    }
-		    $res{"$id"} = \@res;
+		    $res{$id} = \@res;
 		}
 	    }
 	    print $wh $main::json->encode(\%res)."\n";
