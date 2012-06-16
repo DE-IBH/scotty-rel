@@ -86,8 +86,6 @@ END {
 
 #Proc::Daemon::Init;
 
-my $UDS = "/tmp/scotty-rel";
-unlink($UDS);
 my $uds = IO::Socket::INET->new(
     Listen => 5,
     LocalPort => 1701,
