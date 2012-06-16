@@ -42,6 +42,8 @@ my @nodes = ();
 $main::logger = Scotty::Logging::Syslog->new();
 $main::logger->info("starting...");
 
+$main::json = JSON->new->utf8;
+
 sub WARN_handler {
     my($signal) = @_;
 
@@ -114,8 +116,8 @@ sub accept_handler {
     return unless defined($client);
 
     $main::logger->info("incoming connection");
-    print $client encode_json(['map', Scotty::Sensor::getMap()])."\n";
-    print $client encode_json(['series', Scotty::Sensor::getSeries()])."\n";
+    print $client $main::json->encode(['map', Scotty::Sensor::getMap()])."\n";
+    print $client $main::json->encode(['series', Scotty::Sensor::getSeries()])."\n";
 
     push(@clients, $client);
 }

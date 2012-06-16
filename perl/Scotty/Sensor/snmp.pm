@@ -28,7 +28,6 @@ use Scotty::Sensor;
 use strict;
 use warnings;
 use Data::Dumper;
-use JSON;
 use SNMP;
 our @ISA = qw(Scotty::Sensor);
 
@@ -163,7 +162,7 @@ sub worker {
 		    $res{"$id"} = \@res;
 		}
 	    }
-	    print $wh encode_json(\%res)."\n";
+	    print $wh $main::json->encode(\%res)."\n";
 	    sleep(5);
 	}
     }
