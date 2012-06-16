@@ -108,7 +108,7 @@ sub register {
 	max => $self->{query}->{max},
     };
 
-    $main::logger->info("register $self->{service}: $host (".join(', ', @{$params}).')');
+    $main::logger->info("Service $self->{service} registers: $host (".join(', ', @{$params}).')');
 }
 
 sub targets {
@@ -122,7 +122,7 @@ sub worker {
 
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
-	$main::logger->info("worker started");
+	$main::logger->info("Service alive: $self->{service}");
 
 	foreach my $host (keys %{$self->{hosts}}) {
 	    my $href = $self->{hosts}->{$host};

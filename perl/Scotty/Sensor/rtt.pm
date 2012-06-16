@@ -45,7 +45,7 @@ sub register {
 
     $self->{idmap} = $idmap;
     $self->{hosts}->{$host} = 1;
-    $main::logger->info("register $self->{service}: $host");
+    $main::logger->info("Service $self->{service} registers: $host");
 
     my $id = $self->{idmap}->getID("${host}_$self->{service}");
 
@@ -70,7 +70,7 @@ sub worker {
 
     my $wh = $self->SUPER::worker();
     if(defined($wh)) {
-	$main::logger->info("worker started");
+	$main::logger->info("Service alive: $self->{service}");
 
 	my $targets = join("\n", keys %{$self->{hosts}}, '');
 	while(1) {
