@@ -92,8 +92,22 @@ sub DIE_handler {
 	exit 1;
 }
 
+sub INT_handler {
+    if(defined($mypid) && ($mypid == $$)) {
+	if(defined $main::logger) {
+	    $main::logger->notice('Got SIGINT, terminating.');
+	}
+	else {
+	    printf STDERR "Got SIGINT, terminating.\n";
+	}
+    }
+
+    exit;
+}
+
 $SIG{__WARN__} = 'WARN_handler';
 $SIG{__DIE__}  = 'DIE_handler';
+$SIG{INT} = 'INT_handler';
 $SIG{PIPE} = 'IGNORE';
 $SIG{CHLD} = 'IGNORE';
 
