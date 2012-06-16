@@ -49,7 +49,6 @@ my $mypid = $$;
 my @nodes = ();
 
 my $logfmt = sub { my %p = @_; chomp($p{'message'}); return ("[$p{level}] $p{message}\n"); };
-my $logffile = sub { my %p = @_;  return (scalar localtime())." [$$] $p{message}"; };
 $main::logger = Log::Dispatch->new(callbacks => $logfmt);
 $main::logger->add(
     Log::Dispatch::Screen->new(
@@ -137,7 +136,7 @@ sub accept_handler {
     my $client = $uds->accept();
     return unless defined($client);
 
-    $main::logger->info("incoming connection");
+    $main::logger->info('Incoming connection: ' . $client->peerhost());
     print $client $main::json->encode(['map', Scotty::Sensor::getMap()])."\n";
     print $client $main::json->encode(['series', Scotty::Sensor::getSeries()])."\n";
 
@@ -175,6 +174,5 @@ unless($opt_f) {
     $main::logger->remove('console');
 }
 
-$main::logger->info("enter event loop");
-
+$main::logger->info("Enter event loop...");
 Event::loop();
