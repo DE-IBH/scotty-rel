@@ -31,6 +31,7 @@ use Log::Dispatch;
 use Log::Dispatch::Screen;
 use Log::Dispatch::Syslog;
 use Proc::Daemon;
+use Proc::PID::File;
 use IO::Socket;
 use POSIX qw(mkfifo F_SETFL O_NONBLOCK);
 use JSON;
@@ -41,7 +42,8 @@ our $opt_l = '127.0.0.1';
 our $opt_p = 1701;
 our $opt_d;
 our $opt_f;
-getopts('l:p:df');
+our $opt_r = '/var/run';
+getopts('l:p:r:df');
 
 my $mypid = $$;
 my @nodes = ();
@@ -108,8 +110,6 @@ END {
 	}
 }
 
-#Proc::Daemon::Init;
-
 my $uds = IO::Socket::INET->new(
     Listen => 5,
     LocalPort => $opt_p,
@@ -159,6 +159,21 @@ sub sensor_data {
 
 &Scotty::BackendConfig::parse_config(shift);
 &Scotty::Sensor::start_worker();
+
+unless($opt_f) {
+    # daemonize
+    eval { Proc::Daemon::Init() };
+    die "Unable to fork daemon: $@\n" if($@);
+
+    # check if we are alone
+    eval {
+	die "Daemon is already running or PID file is stale!\n" if(Proc::PID::File->running(verify => 1, dir => $opt_r));
+    };
+    die "Failed to setup PID file: $@\n" if($@);
+
+    # detach log to console
+    $main::logger->remove('console');
+}
 
 $main::logger->info("enter event loop");
 
