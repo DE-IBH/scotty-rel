@@ -48,6 +48,9 @@ our $opt_r = '/var/run';
 getopts('l:p:r:df');
 
 my $mypid = $$;
+my @fd2close;
+
+&register_fd(\*STDIN);
 
 my $logfmt = sub { my %p = @_; chomp($p{'message'}); return ("[$p{level}] $p{message}\n"); };
 $main::logger = Log::Dispatch->new(callbacks => $logfmt);
@@ -134,6 +137,7 @@ my $uds = IO::Socket::INET->new(
 $main::logger->notice("Listening $opt_l:$opt_p...");
 
 $uds->sockopt(F_SETFL, O_NONBLOCK);
+register_fd($uds);
 
 Event->io(
 	desc => 'client: accept',
@@ -168,6 +172,16 @@ sub sensor_data {
 
     foreach my $client (@clients) {
 	print $client "$l\n";
+    }
+}
+
+sub register_fd($) {
+    push(@fd2close, shift);
+}
+
+sub close_fds() {
+    foreach my $fd (@fd2close) {
+	close($fd);
     }
 }
 

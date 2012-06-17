@@ -107,11 +107,13 @@ sub worker() {
     die "Cannot fork!\n" unless(defined($pid));
     if($pid == 0) {
 	$0 = "scotty-backend_$self->{service}";
+	main::close_fds();
 	$pipe->writer();
 	$pipe->autoflush(1);
 	return $pipe;
     }
     $pipe->reader();
+    main::register_fd($pipe);
 
     Event->io(
 	desc => "service: $self->{service}",
