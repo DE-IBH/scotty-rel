@@ -48,7 +48,6 @@ our $opt_r = '/var/run';
 getopts('l:p:r:df');
 
 my $mypid = $$;
-my @nodes = ();
 
 my $logfmt = sub { my %p = @_; chomp($p{'message'}); return ("[$p{level}] $p{message}\n"); };
 $main::logger = Log::Dispatch->new(callbacks => $logfmt);
