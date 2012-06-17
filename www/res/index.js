@@ -167,9 +167,8 @@ function scotty_updatesvg(view, redraw) {
 
     for(var chartid in svgdirty) {
 	if(typeof svgcharts[view][ridmap[chartid]] != "undefined") {
-	    var service = ridmap[chartid].split('_')[1];
-	    if(typeof services[service] == "undefined") {
-		log("Unknown service '" + service + "' (chart '" + ridmap[chartid] + "')!");
+	    if(typeof services[chartid] == "undefined") {
+		log("Unknown service '" + chartid + "' (chart '" + ridmap[chartid] + "')!");
 	    }
 
 	    var chart = svgcharts[view][ridmap[chartid]];
@@ -177,9 +176,9 @@ function scotty_updatesvg(view, redraw) {
 	    var ox = chart.x + 2 + dx;
 	    var oy = chart.y + chart.height - 2;
 	    var my = chart.height - 4;
-	    for(idx in services[service].label) {
+	    for(idx in services[chartid].label) {
 		var points = new Array();
-		var fy = my / services[service].max[idx];
+		var fy = my / services[chartid].max[idx];
 		var last;
 		for(var i=0; i < 60; i++) {
 		    if(typeof series[chartid][i] != "undefined") {
@@ -200,7 +199,7 @@ function scotty_updatesvg(view, redraw) {
 		if(typeof chart.line[idx] != "undefined") {
 		    svg.remove(chart.line[idx]);
 		}
-		chart.line[idx] = svg.polyline(points, {stroke: services[service].color[idx], strokeWidth: 2, fill: 'none'});
+		chart.line[idx] = svg.polyline(points, {stroke: services[chartid].color[idx], strokeWidth: 2, fill: 'none'});
 
 
 		if(typeof chart.cval == "undefined") {
@@ -208,16 +207,16 @@ function scotty_updatesvg(view, redraw) {
 		}
 
 		if(typeof chart.cval[idx] != "undefined") {
-		    chart.cval[idx].textContent = scotty_fnum(last, services[service].unit[idx]);
+		    chart.cval[idx].textContent = scotty_fnum(last, services[chartid].unit[idx]);
 		}
 		else {
 		    chart.cval[idx] = svg.text(
 			chart.x + chart.width - 2, chart.y + (parseInt(idx)+1)*10,
-			last + services[service].unit[idx],
+			last + services[chartid].unit[idx],
 			{
 			    fill: 'white',
 			    fontSize: '9px',
-			    stroke: services[service].color[idx],
+			    stroke: services[chartid].color[idx],
 			    textAnchor: 'end',
 			}
 		    );
