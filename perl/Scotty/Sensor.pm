@@ -106,6 +106,7 @@ sub worker() {
     my $pid = fork();
     die "Cannot fork!\n" unless(defined($pid));
     if($pid == 0) {
+	$0 = "scotty-backend_$self->{service}";
 	$pipe->writer();
 	$pipe->autoflush(1);
 	return $pipe;

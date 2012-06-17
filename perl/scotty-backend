@@ -38,6 +38,8 @@ use JSON;
 use strict;
 use warnings;
 
+$0 = 'scotty-backend';
+
 our $opt_l = '127.0.0.1';
 our $opt_p = 1701;
 our $opt_d;
