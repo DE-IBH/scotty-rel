@@ -107,7 +107,6 @@ function scotty_init() {
 		break;
 	    case "series":
 		log("[WS] services:");
-		idmap = m[1];
 		for(var srv in m[1]) {
 		    log(" " + srv);
 		    services[srv] = new Object();
@@ -230,12 +229,13 @@ function scotty_updatesvg(view, redraw) {
 
 function scotty_inChart(rect) {
     var chart = svgcharts[window.CURRENT_VIEW][rect.id];
+    var chartid = idmap[rect.id];
     var descr = rect.id.split('_');
     $('#sc_host').text(descr[0]);
 
     var data = new Array();
-    for(l in services[descr[1]].label) {
-	data.push(services[descr[1]].label[l] + "(" + services[descr[1]].unit[l] + ")");
+    for(l in services[chartid].label) {
+	data.push(services[chartid].label[l] + "(" + services[chartid].unit[l] + ")");
     }
     $('#sc_data').text(data.join(', '));
 
