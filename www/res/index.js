@@ -143,8 +143,7 @@ function scotty_adddata(key, value) {
     }
 
     try {
-	var v = JSON.parse("[" + value + "]");
-	series[key].push(v);
+	series[key].push(value);
 	if(series[key].length > 60) {
 	    series[key].shift();
 	}
