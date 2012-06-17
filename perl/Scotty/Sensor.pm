@@ -126,12 +126,7 @@ sub worker() {
 sub push_hashref($$) {
     my ($self, $wh, $ref) = @_;
 
-    my @data;
-    foreach my $key (keys %$ref) {
-	push(@data, $key + 0);
-	push(@data, $ref->{$key});
-    }
-    print $wh $main::json->encode(\@data)."\n";
+    print $wh $main::json->encode($ref)."\n" if(scalar keys %$ref > 0);
 }
 
 1;
