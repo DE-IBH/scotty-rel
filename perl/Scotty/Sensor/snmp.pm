@@ -132,12 +132,22 @@ sub worker {
 	}
 
 	my %cntrs;
+	my %sesserrs;
 	while(1) {
 	    my %res;
 	    foreach my $host (keys %{$self->{hosts}}) {
 		my $href = $self->{hosts}->{$host};
 		my @ret = $href->{session}->get( $href->{vlobj} );
-		print STDERR "SNMP ERROR: $href->{session}->{ErrorStr}\n" if ($href->{session}->{ErrorStr});
+
+		if ($href->{session}->{ErrorStr}) {
+		    if(!defined($sesserrs{$host}) || ($sesserrs{$host} ne $href->{session}->{ErrorStr})) {
+			$main::logger->warning("SNMP failed ($host): $href->{session}->{ErrorStr}");
+			$sesserrs{$host} = $href->{session}->{ErrorStr};
+		    }
+		    next;
+		}
+		delete($sesserrs{$host});
+
 		foreach my $id (keys %{ $href->{oidmap} }) {
 		    my @res;
 		    foreach my $oid (@{ $href->{oidmap}->{$id} }) {
