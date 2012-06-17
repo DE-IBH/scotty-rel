@@ -160,6 +160,24 @@ sub accept_handler {
     print $client $main::json->encode(['series', Scotty::Sensor::getSeries()])."\n";
 
     push(@clients, $client);
+
+    Event->io(
+	desc => 'client$#clients',
+	fd => $client,
+	poll => 'e',
+	cb => \&client_handler,
+    );
+}
+
+sub client_handler {
+    my $event = shift;
+    $event->w->cancel;
+
+    my $fd = $event->w->fd;
+    @clients = grep { $_ != $fd } @clients;
+
+    $main::logger->info('Connection closed: ' . $fd->peerhost());
+    close($fd);
 }
 
 sub sensor_data {
