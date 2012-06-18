@@ -1,6 +1,16 @@
 Scotty RELOADED Network Management Tool
 =======================================
 
+About
+-----
+
+Scotty RELOADED retrieves status information about network components
+using sensor plugins (e.g. rtt, snmp). The data is presented to the user by
+a browser based user interface. The backend is implemented in Perl using
+the Mojolicious framework. The user interfaces uses HTML5 and JavaScript
+technologies based on jQuery and some additional jQuery plugins.
+
+
 History
 -------
 
