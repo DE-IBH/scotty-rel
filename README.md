@@ -1,4 +1,4 @@
-Scotty RELOADED Network Management Tool
+Scotty RELOADED Network Monitoring Tool
 =======================================
 
 About
@@ -10,11 +10,16 @@ a browser based user interface. The backend is implemented in Perl using
 the Mojolicious framework. The user interfaces uses HTML5 and JavaScript
 technologies based on jQuery and some additional jQuery plugins.
 
+Install
+-------
+
+Read [INSTALL.md](INSTALL.md).
+
 
 History
 -------
 
-The Scotty RELOADED Network Management Tool is a complete rewrite of
+The Scotty RELOADED Network Monitoring Tool is a complete rewrite of
 the ancient Scotty and Tkined Network Management Tools.
 
 The Scotty and Tkined Network Management Tools were developed by
