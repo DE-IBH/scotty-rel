@@ -3,10 +3,12 @@
 <style type="text/css">
 @import "res/tabs.css";
 @import "jquery/jquery.svg.css";
+@import "qTip2/jquery.qtip.min.css";
 </style>
 <script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="jquery/jquery.svg.js"></script>
 <script type="text/javascript" src="jquery/jquery.svggraph.js"></script>
+<script type="text/javascript" src="qTip2/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="web-socket-js/swfobject.js"></script>
 <script type="text/javascript" src="web-socket-js/web_socket.js"></script>
 </head>
