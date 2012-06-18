@@ -1,3 +1,9 @@
+Scotty RELOADED Network Management Tool
+=======================================
+
+History
+-------
+
 The Scotty RELOADED Network Management Tool is a complete rewrite of
 the ancient Scotty and Tkined Network Management Tools.
 
@@ -14,6 +20,3 @@ some performance/bandwidth issues and no designer gui.
 In the meantime, due the development of websockets and other advanced web
 techniques Scotty RELOADED is born - another complete rewrite in Perl
 using a 3 Tier design and advanced web techniques.
-
-
-Thomas Liske <liske@ibh.de> (Sat, 17 Mar 2012 12:21:02 +0100)
