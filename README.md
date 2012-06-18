@@ -13,7 +13,7 @@ technologies based on jQuery and some additional jQuery plugins.
 Install
 -------
 
-Read [INSTALL](scotty-rel/INSTALL.md).
+Read [INSTALL](scotty-rel/tree/master/INSTALL.md).
 
 
 History
