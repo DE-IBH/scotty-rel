@@ -4,3 +4,6 @@
 [submodule "externals/spin.js"]
 	path = externals/spin.js
 	url = git://github.com/fgnass/spin.js.git
+[submodule "externals/qTip2"]
+	path = externals/qTip2
+	url = git://github.com/Craga89/qTip2.git
