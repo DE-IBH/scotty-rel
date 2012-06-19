@@ -227,32 +227,11 @@ function scotty_updatesvg(view, redraw) {
     svgdirty = new Object();
 }
 
-function scotty_inChart(rect) {
-    var chart = svgcharts[window.CURRENT_VIEW][rect.id];
-    var chartid = idmap[rect.id];
-    var descr = rect.id.split('_');
-    $('#sc_host').text(descr[0]);
-
-    var data = new Array();
-    for(l in services[chartid].label) {
-	data.push(services[chartid].label[l] + "(" + services[chartid].unit[l] + ")");
-    }
-    $('#sc_data').text(data.join(', '));
-
-    $('#scotty_chart').show();
-}
-
-function scotty_outChart(rect) {
-    $('#scotty_chart').hide();
-}
-
 function scotty_createChart(svg, chart) {
-    svg.rect(
+    var rect = svg.rect(
 	chart.x, chart.y, chart.width, chart.height, 
 	{
 	    id: chart.id,
-	    onmouseover: "scotty_inChart(this);",
-	    onmouseout: "scotty_outChart(this);",
 	    stroke: 'black',
 	    fill: 'white'
 	}
@@ -287,6 +266,25 @@ function scotty_loadViewDone(svg, error) {
 	svg.remove(this);
 	scotty_createChart(svg, chart);
 	svgcharts["#" + view][this.id.substring(3)] = chart;
+    });
+
+    $('rect').qtip({
+	content: {
+	    title: {
+		text: function(api) {
+		    var descr = this.attr('id').split('_');
+		    return descr[0];
+	        }
+	    },
+	    text: function(api) {
+		var chartid = idmap[this.attr('id')];
+		var data = new Array();
+		for(l in services[chartid].label) {
+		    data.push("<span style='color:" + services[chartid].color[l] + "'>" + services[chartid].label[l] + "(" + services[chartid].unit[l] + ")");
+		}
+		return data.join(', ');
+	    }
+	}
     });
 
     viewsloaded.push(this.id);
