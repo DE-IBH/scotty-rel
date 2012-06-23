@@ -108,7 +108,7 @@ function scotty_init() {
 	    case "series":
 		log("[WS] services:");
 		for(var srv in m[1]) {
-		    log(" " + srv);
+		    log(" " + ridmap[srv]);
 		    services[srv] = new Object();
 		    for(var opt in m[1][srv]) {
 			services[srv][opt] = m[1][srv][opt];
