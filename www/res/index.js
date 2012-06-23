@@ -59,6 +59,7 @@ var ws;
 var idmap;
 var ridmap = new Object();
 var series = new Object();
+var sermax = new Object();
 var services = new Object();
 var svgviews = new Object();
 var svgdirty = new Object();
@@ -147,6 +148,13 @@ function scotty_adddata(key, value) {
 	    series[key].shift();
 	}
 
+	for(idx in value) {
+	    if(typeof sermax[key] == "undefined")
+		sermax[key] = value;
+	    else if(value[idx] > sermax[key][idx])
+		sermax[key][idx] = value[idx];
+	}
+
 	svgdirty[key] = 1;
     }
     catch(err) {
@@ -174,10 +182,10 @@ function scotty_updatesvg(view, redraw) {
 	    var dx = (chart.width - 4) / 60;
 	    var ox = chart.x + 2 + dx;
 	    var oy = chart.y + chart.height - 2;
-	    var my = chart.height - 4;
+	    var my = chart.height - 14;
 	    for(idx in services[chartid].label) {
 		var points = new Array();
-		var fy = my / services[chartid].max[idx];
+		var fy = my / (services[chartid]["max"][idx] == null ? sermax[chartid][idx] : services[chartid]["max"][idx]);
 		var last;
 		for(var i=0; i < 60; i++) {
 		    if(typeof series[chartid][i] != "undefined") {
@@ -209,16 +217,28 @@ function scotty_updatesvg(view, redraw) {
 		    chart.cval[idx].textContent = scotty_fnum(last, services[chartid].unit[idx]);
 		}
 		else {
-		    chart.cval[idx] = svg.text(
-			chart.x + chart.width - 2, chart.y + (parseInt(idx)+1)*10,
-			last + services[chartid].unit[idx],
-			{
-			    fill: 'white',
-			    fontSize: '9px',
-			    stroke: services[chartid].color[idx],
-			    textAnchor: 'end',
-			}
-		    );
+		    if(idx == 0)
+			chart.cval[idx] = svg.text(
+			    chart.x + 2, chart.y + 10,
+			    last + services[chartid].unit[idx],
+			    {
+				fill: 'white',
+				fontSize: '9px',
+				stroke: services[chartid].color[idx],
+				textAnchor: 'begin',
+			    }
+			);
+		    else
+			chart.cval[idx] = svg.text(
+			    chart.x + chart.width - 2, chart.y + 10,
+			    last + services[chartid].unit[idx],
+			    {
+				fill: 'white',
+				fontSize: '9px',
+				stroke: services[chartid].color[idx],
+				textAnchor: 'end',
+			    }
+			);
 		}
 	    }
 	}
