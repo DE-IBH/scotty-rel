@@ -150,7 +150,7 @@ function scotty_adddata(key, value) {
 
 	for(idx in value) {
 	    if(typeof sermax[key] == "undefined")
-		sermax[key] = value;
+		sermax[key] = (value > 1 ? value : 1);
 	    else if(value[idx] > sermax[key][idx])
 		sermax[key][idx] = value[idx];
 	}
@@ -208,6 +208,7 @@ function scotty_updatesvg(view, redraw) {
 		}
 		chart.line[idx] = svg.polyline(points, {stroke: services[chartid].color[idx], strokeWidth: 2, fill: 'none'});
 
+		if(parseInt(idx) > 1) continue;
 
 		if(typeof chart.cval == "undefined") {
 		    chart.cval = new Array();
