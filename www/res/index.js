@@ -75,7 +75,7 @@ function scotty_fnum(value, unit) {
     var j = 4;
     var f = 1;
     for(var i = 0; i < si_facts.length; i++) {
-	if(value > si_facts[i]) {
+	if(value >= si_facts[i] - 1) {
 	    j = i;
 	    break;
 	}
