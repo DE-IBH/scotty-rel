@@ -69,6 +69,7 @@ var viewsloaded = new Array();
 var flashTO;
 var si_prefs = ['T', 'G', 'M', 'k', '', 'm', 'µ'];
 var si_facts = [ Math.pow(10,12), Math.pow(10,9), Math.pow(10,6), Math.pow(10,3), 1, Math.pow(10,-3), Math.pow(10,-6)];
+var spinner;
 
 function scotty_fnum(value, unit) {
     var j = 4;
@@ -83,6 +84,8 @@ function scotty_fnum(value, unit) {
 }
 
 function scotty_init() {
+    $("#view1").spin();
+
     var wsurl = window.location.toString().replace(/^http/i, "ws");
     if(wsurl.charAt(wsurl.length-1) != '/') {
 	wsurl += '/';
@@ -117,6 +120,7 @@ function scotty_init() {
 		}
 		break;
 	    default:
+		$("#view1").spin(false);
 		clearTimeout(flashTO);
 		$('#scotty_hb').css("background", "#00ff00");
 		for(var key in m) {
@@ -130,10 +134,12 @@ function scotty_init() {
     ws.onclose = function() {
         log("[WS] closed");
 	$('#scotty_hb').css("background", "#7f0000");
+	$("#view1").spin(false);
     };
     ws.onerror = function() {
         log("[WS] failed");
 	$('#scotty_hb').css("background", "#ff0000");
+	$("#view1").spin(false);
     };
 }
 
