@@ -156,7 +156,9 @@ function scotty_adddata(key, value) {
 
 	for(idx in value) {
 	    if(typeof sermax[key] == "undefined")
-		sermax[key] = (value > 1 ? value : 1);
+		sermax[key] = new Array();
+	    else if(typeof sermax[key][idx] == "undefined")
+		sermax[key][idx] = (value[idx] > 1 ? value[idx] * 1.2 : 1);
 	    else if(value[idx] > sermax[key][idx])
 		sermax[key][idx] = value[idx] * 1.2;
 	}
