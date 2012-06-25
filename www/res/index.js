@@ -158,7 +158,7 @@ function scotty_adddata(key, value) {
 	    if(typeof sermax[key] == "undefined")
 		sermax[key] = (value > 1 ? value : 1);
 	    else if(value[idx] > sermax[key][idx])
-		sermax[key][idx] = value[idx];
+		sermax[key][idx] = value[idx] * 1.2;
 	}
 
 	svgdirty[key] = 1;
@@ -307,9 +307,9 @@ function scotty_loadViewDone(svg, error) {
 		var chartid = idmap[this.attr('id')];
 		var data = new Array();
 		for(l in services[chartid].label) {
-		    data.push("<span style='color:" + services[chartid].color[l] + "'>" + services[chartid].label[l] + "(" + services[chartid].unit[l] + ")");
+		    data.push("<span style='color:" + services[chartid].color[l] + "'>" + services[chartid].label[l] + "=" + (typeof series[chartid][59][l] != "undefined" ? series[chartid][59][l] : "?") + services[chartid].unit[l]);
 		}
-		return data.join(', ');
+		return data.join('; ');
 	    }
 	}
     });
