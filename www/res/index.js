@@ -307,7 +307,7 @@ function scotty_loadViewDone(svg, error) {
 		var chartid = idmap[this.attr('id')];
 		var data = new Array();
 		for(l in services[chartid].label) {
-		    data.push("<span style='color:" + services[chartid].color[l] + "'>" + services[chartid].label[l] + "=" + (typeof series[chartid][59][l] != "undefined" ? series[chartid][59][l] : "?") + services[chartid].unit[l]);
+		    data.push("<span style='color:" + services[chartid].color[l] + "'>" + services[chartid].label[l] + "=" + (typeof series[chartid][59][l] != "undefined" ? scotty_fnum(series[chartid][59][l], services[chartid].unit[l]) : "?") );
 		}
 		return data.join('; ');
 	    }
