@@ -50,12 +50,12 @@ sub register {
     my $id = $self->{idmap}->getID("${host}_$self->{service}");
 
     $series->{$id} = {
-	label => ['rtt', 'pl'],
+	label => ['pl', 'rtt'],
 	interval => 5,
-	unit => ['ms', '%'],
-	color => ['black', 'red'],
+	unit => ['%', 'ms'],
+	color => ['red', 'black'],
 	min => [0, 0],
-	max => [undef, 100],
+	max => [100, undef],
     };
 }
 
@@ -92,7 +92,7 @@ sub worker {
 		    my @mea = split(/ /, $2);
 		    my @rtt = grep {/[^-]/} @mea;
 
-		    $res{$sid} = [($#rtt > -1 ? median(@rtt)*1.0 : undef), 100 - 100*($#rtt + 1)/($#mea + 1)];
+		    $res{$sid} = [100 - 100*($#rtt + 1)/($#mea + 1), ($#rtt > -1 ? median(@rtt)*1.0 : undef)];
 		}
 		else {
 		    warn "Unhandled fping output '$l'!\n";
