@@ -191,9 +191,7 @@ function scotty_updatesvg(view, redraw) {
 	    var ox = chart.x + 2 + dx;
 	    var oy = chart.y + chart.height - 2;
 	    var my = chart.height - 14;
-	    for(idx in services[chartid].label) {
-		if(idx > 1) break;
-
+	    for(idx in services[chartid].label.slice(0,2)) {
 		var points = new Array();
 		var maxy = parseInt(services[chartid]["max"][idx]);
 		var fy = my / (maxy == 0 || sermax[chartid][idx] > maxy || isNaN(maxy) ? sermax[chartid][idx] : maxy);
