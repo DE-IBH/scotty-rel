@@ -192,12 +192,18 @@ function scotty_updatesvg(view, redraw) {
 	    var oy = chart.y + chart.height - 2;
 	    var my = chart.height - 14;
 	    for(idx in services[chartid].label) {
+		if(idx > 1) break;
+
 		var points = new Array();
 		var maxy = parseInt(services[chartid]["max"][idx]);
 		var fy = my / (maxy == 0 || sermax[chartid][idx] > maxy || isNaN(maxy) ? sermax[chartid][idx] : maxy);
 		var last;
 		for(var i=0; i < 60; i++) {
 		    if(typeof series[chartid][i] != "undefined") {
+			if((idx == 0) &&
+			   (i == 0 || typeof series[chartid][i-1] == "undefined"))
+			    points.push([ox + dx*i, oy]);
+
 			var v = series[chartid][i][idx];
 			last = v;
 			if(typeof v == "undefined")
@@ -205,6 +211,9 @@ function scotty_updatesvg(view, redraw) {
 			
 			v *= fy;
 			points.push([ox + dx*i, oy - (v < my ? v : my)]);
+
+			if((idx == 0) && (i == 59))
+			    points.push([ox + dx*i, oy]);
 		    }
 		}
 
@@ -215,9 +224,13 @@ function scotty_updatesvg(view, redraw) {
 		if(typeof chart.line[idx] != "undefined") {
 		    svg.remove(chart.line[idx]);
 		}
-		chart.line[idx] = svg.polyline(points, {stroke: services[chartid].color[idx], strokeWidth: 2, fill: 'none'});
 
-		if(parseInt(idx) > 1) continue;
+		if(idx == 0) {
+		    chart.line[idx] = svg.polygon(points, {stroke: services[chartid].color[idx], strokeWidth: 2, fill: services[chartid].color[idx]});
+		}
+		else {
+		    chart.line[idx] = svg.polyline(points, {stroke: services[chartid].color[idx], strokeWidth: 2, fill: 'none'});
+		}
 
 		if(typeof chart.cval == "undefined") {
 		    chart.cval = new Array();
