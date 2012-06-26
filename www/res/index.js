@@ -237,7 +237,7 @@ function scotty_updatesvg(view, redraw) {
 		}
 
 		if(typeof chart.cval[idx] != "undefined") {
-		    chart.cval[idx].textContent = scotty_fnum(last, services[chartid].unit[idx]);
+		    chart.cval[idx].textContent = (last > 0 ? scotty_fnum(last, services[chartid].unit[idx]) : '');
 		}
 		else {
 		    if(idx == 0)
