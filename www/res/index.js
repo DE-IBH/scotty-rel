@@ -193,7 +193,8 @@ function scotty_updatesvg(view, redraw) {
 	    var my = chart.height - 14;
 	    for(idx in services[chartid].label) {
 		var points = new Array();
-		var fy = my / (services[chartid]["max"][idx] == null ? sermax[chartid][idx] : services[chartid]["max"][idx]);
+		var maxy = parseInt(services[chartid]["max"][idx]);
+		var fy = my / (maxy == 0 || sermax[chartid][idx] > maxy || isNaN(maxy) ? sermax[chartid][idx] : maxy);
 		var last;
 		for(var i=0; i < 60; i++) {
 		    if(typeof series[chartid][i] != "undefined") {
