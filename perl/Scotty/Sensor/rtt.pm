@@ -94,6 +94,12 @@ sub worker {
 
 		    $res{$sid} = [100 - 100*($#rtt + 1)/($#mea + 1), ($#rtt > -1 ? median(@rtt)*1.0 : undef)];
 		}
+		elsif($l =~ m@^(\S+)\s*:$@) {
+		    my $host = $1;
+		    my $sid = $self->{idmap}->getID("${host}_$self->{service}");
+
+		    $res{$sid} = [100, undef];
+		}
 		else {
 		    warn "Unhandled fping output '$l'!\n";
 		}
