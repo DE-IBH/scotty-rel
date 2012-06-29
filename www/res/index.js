@@ -116,6 +116,11 @@ function scotty_init() {
 		    services[srv] = new Object();
 		    for(var opt in m[1][srv]) {
 			services[srv][opt] = m[1][srv][opt];
+			if(opt == "max") {
+			    for(var i in services[srv][opt]) {
+				services[srv][opt][i] = parseInt(services[srv][opt][i]);
+			    }
+			}
 		    }
 		}
 		break;
@@ -170,6 +175,18 @@ function scotty_adddata(key, value) {
     }
 }
 
+function scotty_getmax(chartid, idx) {
+    var max = services[chartid]["max"];
+    var ret = (isNaN(max[idx]) ?
+	(
+	    idx > 0 && services[chartid]["unit"][idx] == services[chartid]["unit"][idx-1] ?
+	    scotty_getmax(chartid, idx-1)
+	    :
+	    sermax[chartid][idx]
+	) : max[idx]);
+    return (ret > 0 ? ret : 1);
+}
+
 function scotty_updatesvg(view, redraw) {
     var svg = svgviews[view];
 
@@ -193,8 +210,8 @@ function scotty_updatesvg(view, redraw) {
 	    var my = chart.height - 14;
 	    for(idx in services[chartid].label.slice(0,2)) {
 		var points = new Array();
-		var maxy = parseInt(services[chartid]["max"][idx]);
-		var fy = my / (maxy == 0 || sermax[chartid][idx] > maxy || isNaN(maxy) ? sermax[chartid][idx] : maxy);
+		var maxy = scotty_getmax(chartid, idx);
+		var fy = my / maxy;
 		var last;
 		for(var i=0; i < 60; i++) {
 		    if(typeof series[chartid][i] != "undefined") {
