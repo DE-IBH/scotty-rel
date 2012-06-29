@@ -241,10 +241,10 @@ function scotty_updatesvg(view, redraw) {
 		}
 
 		if(idx == 0) {
-		    chart.line[idx] = svg.polygon(points, {stroke: services[chartid].color[idx], strokeWidth: 2, fill: services[chartid].color[idx]});
+		    chart.line[idx] = svg.polygon(points, {stroke: services[chartid].color[idx], strokeWidth: 1, fill: services[chartid].color[idx]});
 		}
 		else {
-		    chart.line[idx] = svg.polyline(points, {stroke: services[chartid].color[idx], strokeWidth: 2, fill: 'none'});
+		    chart.line[idx] = svg.polyline(points, {stroke: services[chartid].color[idx], strokeWidth: 1.5, fill: 'none'});
 		}
 
 		if(typeof chart.cval == "undefined") {
