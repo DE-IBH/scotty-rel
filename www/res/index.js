@@ -338,9 +338,20 @@ function scotty_loadViewDone(svg, error) {
 		var chartid = idmap[this.attr('id')];
 		var data = new Array();
 		for(l in services[chartid].label) {
-		    data.push("<span style='color:" + services[chartid].color[l] + "'>" + services[chartid].label[l] + "=" + (typeof series[chartid][59][l] != "undefined" ? scotty_fnum(series[chartid][59][l], services[chartid].unit[l]) : "?") );
+		    data.push(
+			"<span style='color:" + 
+			services[chartid].color[l] + 
+			"'>" + 
+			services[chartid].label[l] + 
+			" = " + 
+			(typeof series[chartid][59][l] != "undefined" ? scotty_fnum(series[chartid][59][l], services[chartid].unit[l]) : "?") +
+			(isNaN(sermax[chartid][l]) || series[chartid][59][l] == sermax[chartid][l] ? '' :
+			    " &#8804; " + scotty_fnum(sermax[chartid][l], services[chartid].unit[l])
+			) +
+			"</span>"
+		    );
 		}
-		return data.join('; ');
+		return data.join('<br/>');
 	    }
 	}
     });
