@@ -160,12 +160,13 @@ function scotty_adddata(key, value) {
 	}
 
 	for(idx in value) {
+	    var f = (isNaN(services[key]["max"][idx]) ? 1.2 : 1);
 	    if(typeof sermax[key] == "undefined")
 		sermax[key] = new Array();
 	    else if(typeof sermax[key][idx] == "undefined")
-		sermax[key][idx] = (value[idx] > 1 ? value[idx] * 1.2 : 1);
+		sermax[key][idx] = (value[idx] > 1 ? value[idx] * f : 1);
 	    else if(value[idx] > sermax[key][idx])
-		sermax[key][idx] = value[idx] * 1.2;
+		sermax[key][idx] = value[idx] * f;
 	}
 
 	svgdirty[key] = 1;
