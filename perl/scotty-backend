@@ -25,7 +25,7 @@
 #
 
 use Scotty::BackendConfig;
-use Event;
+use EV;
 use Getopt::Std;
 use Log::Dispatch;
 use Log::Dispatch::Screen;
@@ -139,18 +139,12 @@ $main::logger->notice("Listening $opt_l:$opt_p...");
 $uds->sockopt(F_SETFL, O_NONBLOCK);
 &register_fd($uds);
 
-Event->io(
-	desc => 'client: accept',
-	fd => $uds,
-	poll => 'r',
-	cb => \&accept_handler,
-	repeat => '1',
-);
+my $wuds = EV::io $uds, EV::READ, \&accept_handler;
 
 my @clients;
 sub accept_handler {
-    my $event = shift;
-    my $h = $event->w->fd;
+    my ($w, $revents) = @_;
+    my $h = $w->fh;
 
     my $client = $uds->accept();
     return unless defined($client);
@@ -161,19 +155,17 @@ sub accept_handler {
 
     push(@clients, $client);
 
-    Event->io(
-	desc => 'client$#clients',
-	fd => $client,
-	poll => 'e',
-	cb => \&client_handler,
-    );
+    my $wclient = EV::io $client, EV::READ, \&client_handler;
 }
 
 sub client_handler {
-    my $event = shift;
-    $event->w->cancel;
+    my ($w, $revents) = @_;
+    my $fd = $w->fh;
 
-    my $fd = $event->w->fd;
+    return if(defined(<$fd>));
+
+    $w->cancel;
+
     @clients = grep { $_ != $fd } @clients;
 
     $main::logger->info('Connection closed: ' . $fd->peerhost());
@@ -181,8 +173,8 @@ sub client_handler {
 }
 
 sub sensor_data {
-    my $event = shift;
-    my $h = $event->w->fd;
+    my ($w, $revents) = @_;
+    my $h = $w->fh;
     return if eof($h);
 
     my $l = <$h>;
@@ -222,4 +214,4 @@ unless($opt_f) {
 
 &Scotty::Sensor::start_worker();
 $main::logger->info("Enter event loop...");
-Event::loop();
+EV::run;

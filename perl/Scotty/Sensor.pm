@@ -27,7 +27,7 @@ package Scotty::Sensor;
 use strict;
 use warnings;
 use Scotty::IDMapper;
-use Event;
+use EV;
 use IO::Pipe;
 
 my %services;
@@ -115,12 +115,7 @@ sub worker() {
     $pipe->reader();
     main::register_fd($pipe);
 
-    Event->io(
-	desc => "service: $self->{service}",
-	fd => $pipe,
-	poll => 'r',
-	cb => \&main::sensor_data,
-    );
+    $self->{wpipe} = EV::io $pipe, EV::READ, \&main::sensor_data;
 
     return undef;
 }

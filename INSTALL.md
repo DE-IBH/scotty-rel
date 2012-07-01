@@ -5,6 +5,7 @@ The following command line binaries are required:
 * fping
 
 The following Perl packages are required:
+* EV
 * JSON(::XS)
 * Mojolicious
 * SNMP
