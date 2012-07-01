@@ -331,8 +331,9 @@ function scotty_loadViewDone(svg, error) {
 	content: {
 	    title: {
 		text: function(api) {
+		    var chartid = idmap[this.attr('id')];
 		    var descr = this.attr('id').split('_');
-		    return descr[0];
+		    return (services[chartid].title ? descr[0] + ": " + services[chartid].title : descr[0]);
 	        }
 	    },
 	    text: function(api) {

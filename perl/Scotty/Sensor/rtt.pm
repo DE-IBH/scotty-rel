@@ -51,6 +51,7 @@ sub register {
 
     $series->{$id} = {
 	label => ['pl', 'rtt'],
+	title => 'Round Trip Time',
 	interval => 5,
 	unit => ['%', 's'],
 	color => ['red', 'black'],
