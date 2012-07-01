@@ -52,7 +52,7 @@ sub register {
     $series->{$id} = {
 	label => ['pl', 'rtt'],
 	interval => 5,
-	unit => ['%', 'ms'],
+	unit => ['%', 's'],
 	color => ['red', 'black'],
 	min => [0, 0],
 	max => [100, undef],
@@ -92,7 +92,7 @@ sub worker {
 		    my @mea = split(/ /, $2);
 		    my @rtt = grep {/[^-]/} @mea;
 
-		    $res{$sid} = [100 - 100*($#rtt + 1)/($#mea + 1), ($#rtt > -1 ? median(@rtt)*1.0 : undef)];
+		    $res{$sid} = [100 - 100*($#rtt + 1)/($#mea + 1), ($#rtt > -1 ? median(@rtt)/1000 : undef)];
 		}
 		elsif($l =~ m@^(\S+)\s*:$@) {
 		    my $host = $1;
