@@ -23,10 +23,12 @@
 
 #scotty_about {
     float: right;
-    background-color: 0;
-    padding: 2px 3px;
+    padding:2px 3px;
+    height: 20px;
     font-size: 16px;
     font-weight: bold;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
 }
 
 #scotty_hb {
