@@ -259,7 +259,7 @@ function scotty_updatesvg(view, redraw) {
 		    if(idx == 0)
 			chart.cval[idx] = svg.text(
 			    chart.x + 2, chart.y + 10,
-			    last + services[chartid].unit[idx],
+			    (last > 0 ? scotty_fnum(last, services[chartid].unit[idx]) : ''),
 			    {
 				fill: 'white',
 				fontSize: '9px',
@@ -270,7 +270,7 @@ function scotty_updatesvg(view, redraw) {
 		    else
 			chart.cval[idx] = svg.text(
 			    chart.x + chart.width - 2, chart.y + 10,
-			    last + services[chartid].unit[idx],
+			    (last > 0 ? scotty_fnum(last, services[chartid].unit[idx]) : ''),
 			    {
 				fill: 'white',
 				fontSize: '9px',
