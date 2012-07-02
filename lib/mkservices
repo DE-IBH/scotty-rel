@@ -44,6 +44,8 @@ for fn in "$VIEWSDIR/"*.svg; do
     view=`basename "$fn"`
     xsltproc -stringparam view "${view:0:-4}" -o "$V2SFN" "$XSLDIR/view2services.xsl" "$fn" || err xsltproc processing failed on $fn
     tail -n +2 "$V2SFN" >> "$SRVFN"
+
+    xsltproc -o "$VIEWSWWWDIR/$view" "$XSLDIR/prepare-view.xsl" "$fn" || err xsltproc processing failed on $fn
 done
 rm "$V2SFN"
 echo '</views>' >> "$SRVFN"
