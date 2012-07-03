@@ -84,8 +84,6 @@ function scotty_fnum(value, unit) {
 }
 
 function scotty_init() {
-    $("#view1").spin();
-
     var wsurl = window.location.toString().replace(/^http/i, "ws");
     if(wsurl.charAt(wsurl.length-1) != '/') {
 	wsurl += '/';
@@ -95,6 +93,7 @@ function scotty_init() {
     ws = new WebSocket(wsurl);
 
     ws.onopen = function() {
+        $(window.CURRENT_VIEW).spin();
         log("[WS] open");
         $('#scotty_hb').css("background", "yellow");
     };
@@ -125,7 +124,7 @@ function scotty_init() {
 		}
 		break;
 	    default:
-		$("#view1").spin(false);
+		$(window.CURRENT_VIEW).spin(false);
 		clearTimeout(flashTO);
 		$('#scotty_hb').css("background", "#00ff00");
 		for(var key in m) {
@@ -139,12 +138,12 @@ function scotty_init() {
     ws.onclose = function() {
         log("[WS] closed");
 	$('#scotty_hb').css("background", "#7f0000");
-	$("#view1").spin(false);
+	$(window.CURRENT_VIEW).spin(false);
     };
     ws.onerror = function() {
         log("[WS] failed");
 	$('#scotty_hb').css("background", "#ff0000");
-	$("#view1").spin(false);
+	$(window.CURRENT_VIEW).spin(false);
     };
 }
 
