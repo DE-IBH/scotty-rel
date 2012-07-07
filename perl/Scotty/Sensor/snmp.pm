@@ -154,20 +154,26 @@ sub worker {
 			push(@res, map {
 			    my $v = (${$_}[2] =~ /^-?\d+$/ ? ${$_}[2] : undef);
 
-			    if(defined($v) && (${$_}[3] =~ /^(COUNTER|GAUGE|INTEGER)/)) {
-				$v += 0;
-			    }
+			    if(defined($v)) {
+				if(${$_}[3] =~ /^(COUNTER|GAUGE|INTEGER)/) {
+				    $v += 0;
 
-			    if(${$_}[3] =~ /^COUNTER/ && defined($v)) {
-				my $k = $id.${$oid}[0];
-				if(exists($cntrs{$k})) {
-				    my $w = $cntrs{$k};
-				    $cntrs{$k} = $v;
-				    $v -= $w;
-				}
-				else {
-				    $cntrs{$k} = $v;
-				    $v = undef;
+				    if(${$_}[3] =~ /^(INTEGER)/) {
+					my $e = SNMP::mapEnum($_->[0], $_->[2]);
+					$v .= ":$e" unless($e eq 'unknown');
+                                    }
+				    elsif(${$_}[3] =~ /^COUNTER/) {
+					my $k = $id.${$oid}[0];
+					if(exists($cntrs{$k})) {
+					    my $w = $cntrs{$k};
+					    $cntrs{$k} = $v;
+					    $v -= $w;
+					}
+					else {
+					    $cntrs{$k} = $v;
+					    $v = undef;
+					}
+				    }
 				}
 			    }
 
