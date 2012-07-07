@@ -72,6 +72,9 @@ var si_facts = [ Math.pow(10,12), Math.pow(10,9), Math.pow(10,6), Math.pow(10,3)
 var spinner;
 
 function scotty_fnum(value, unit) {
+    if(isNaN(value))
+	return value;
+
     var j = 4;
     var f = 1;
     for(var i = 0; i < si_facts.length; i++) {
@@ -159,13 +162,18 @@ function scotty_adddata(key, value) {
 	}
 
 	for(idx in value) {
+	    var v = value[idx];
+
+	    if(isNaN(v))
+		continue;
+
 	    var f = (isNaN(services[key]["max"][idx]) ? 1.2 : 1);
 	    if(typeof sermax[key] == "undefined")
 		sermax[key] = new Array();
 	    else if(typeof sermax[key][idx] == "undefined")
-		sermax[key][idx] = value[idx] * f;
+		sermax[key][idx] = v * f;
 	    else if(value[idx] > sermax[key][idx])
-		sermax[key][idx] = value[idx] * f;
+		sermax[key][idx] = v * f;
 	}
 
 	svgdirty[key] = 1;
@@ -332,12 +340,13 @@ function scotty_loadViewDone(svg, error) {
 		text: function(api) {
 		    var chartid = idmap[this.attr('id')];
 		    var descr = this.attr('id').split('_');
-		    return (services[chartid].title ? descr[0] + ": " + services[chartid].title : descr[0]);
+		    return (typeof services[chartid] != 'undefined' && services[chartid].title ? descr[0] + ": " + services[chartid].title : descr[0]);
 	        }
 	    },
 	    text: function(api) {
 		var chartid = idmap[this.attr('id')];
 		var data = new Array();
+		if(typeof services[chartid] != 'undefined' && typeof series[chartid] != 'undefined')
 		for(l in services[chartid].label) {
 		    data.push(
 			"<span style='color:" + 
@@ -345,8 +354,8 @@ function scotty_loadViewDone(svg, error) {
 			"'>" + 
 			services[chartid].label[l] + 
 			" = " + 
-			(typeof series[chartid][59][l] != "undefined" ? scotty_fnum(series[chartid][59][l], services[chartid].unit[l]) : "?") +
-			(isNaN(sermax[chartid][l]) || series[chartid][59][l] == sermax[chartid][l] ? '' :
+			(series[chartid][59][l] != null ? scotty_fnum(series[chartid][59][l], services[chartid].unit[l]) : "?") +
+			(isNaN(sermax[chartid][l]) || series[chartid][59][l] == sermax[chartid][l] || series[chartid][59][l] == null ? '' :
 			    " &#8804; " + scotty_fnum(sermax[chartid][l], services[chartid].unit[l])
 			) +
 			"</span>"
