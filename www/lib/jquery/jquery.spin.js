@@ -1,1 +1,0 @@
-../../../externals/jquery.spin.js/jquery.spin.js
