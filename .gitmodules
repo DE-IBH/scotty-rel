@@ -12,4 +12,4 @@
 	url = git://gist.github.com/1290439.git
 [submodule "externals/svg.git"]
 	path = externals/svg.git
-	url = git://github.com/vamf12/svg.git
+	url = git://github.com/kbwood/svg.git
