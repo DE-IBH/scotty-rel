@@ -32,7 +32,7 @@ echo "Creating views.xml..."
 
 echo "Creating HTML files..."
 for tpl in $TPLDIR/*.tpl; do
-    html=`basename "${tpl:0:-3}html"`
+    html=`basename "${tpl%tpl}html"`
     echo " $html"
     "$LIBDIR/mkindex" "$tpl" "$WWWDIR/$html" "$VIEWSDIR"
 done
