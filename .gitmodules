@@ -10,3 +10,6 @@
 [submodule "externals/jquery.spin.js"]
 	path = externals/jquery.spin.js
 	url = git://gist.github.com/1290439.git
+[submodule "externals/svg.git"]
+	path = externals/svg.git
+	url = git://github.com/kbwood/svg.git

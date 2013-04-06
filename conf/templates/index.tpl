@@ -2,17 +2,17 @@
 <head>
 <style type="text/css">
 @import "res/tabs.css";
-@import "jquery/jquery.svg.css";
-@import "qTip2/jquery.qtip.min.css";
+@import "lib/svg.js/jquery.svg.css";
+@import "lib/qTip2/jquery.qtip.min.css";
 </style>
-<script type="text/javascript" src="jquery/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="jquery/jquery.spin.js"></script>
-<script type="text/javascript" src="jquery/jquery.svg.js"></script>
-<script type="text/javascript" src="jquery/jquery.svggraph.js"></script>
-<script type="text/javascript" src="qTip2/jquery.qtip.min.js"></script>
-<script type="text/javascript" src="spin.js/spin.min.js"></script>
-<script type="text/javascript" src="web-socket-js/swfobject.js"></script>
-<script type="text/javascript" src="web-socket-js/web_socket.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="lib/jquery.spin.js/jquery.spin.js"></script>
+<script type="text/javascript" src="lib/svg.js/jquery.svg.js"></script>
+<script type="text/javascript" src="lib/svg.js/jquery.svggraph.js"></script>
+<script type="text/javascript" src="lib/qTip2/jquery.qtip.min.js"></script>
+<script type="text/javascript" src="lib/spin.js/spin.min.js"></script>
+<script type="text/javascript" src="lib/web-socket-js/swfobject.js"></script>
+<script type="text/javascript" src="lib/web-socket-js/web_socket.js"></script>
 </head>
 <body>
 <div id="scotty_about_popup">
