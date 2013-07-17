@@ -53,13 +53,13 @@ websocket '/ws' => sub {
 
 		    if(defined($err)) {
 			app->log->debug("backend failed: $err");
-			$client->close();
+			$client->finish() if(defined($client->tx));
 		    }
 		    else {
 			$stream->on(error => sub {
 			    my ($stream, $err) = @_;
 			    app->log->debug("backend error: $err");
-			    $client->close();
+			    $client->finish() if(defined($client->tx));
 			});
 
 			$stream->on(read => sub {
