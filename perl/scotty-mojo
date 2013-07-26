@@ -26,12 +26,22 @@
 
 use Mojolicious::Lite;
 use Mojo::IOLoop;;
+use Getopt::Std;
 use JSON;
+
+our $opt_p = 0;
+getopt('p');
+my $port = $opt_p ? $opt_p : 3000;
 
 get '/' => sub {
   my $self = shift;
   $self->render_static('index.html');
 };
+
+my $daemon = Mojo::Server::Daemon->new(
+    app    => app,
+    listen => ["http://*:$port"]
+);
 
 websocket '/ws' => sub {
     my $client = shift;
@@ -99,4 +109,4 @@ websocket '/ws' => sub {
     });
 };
 
-app->start;
+$daemon->run;
