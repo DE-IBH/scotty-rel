@@ -142,6 +142,7 @@ $uds->sockopt(F_SETFL, O_NONBLOCK);
 my $wuds = EV::io $uds, EV::READ, \&accept_handler;
 
 my @clients;
+my @watchers;
 sub accept_handler {
     my ($w, $revents) = @_;
     my $h = $w->fh;
@@ -155,7 +156,7 @@ sub accept_handler {
 
     push(@clients, $client);
 
-    my $wclient = EV::io $client, EV::READ, \&client_handler;
+    push(@watchers, EV::io $client, EV::READ, \&client_handler);
 }
 
 sub client_handler {
@@ -164,9 +165,10 @@ sub client_handler {
 
     return if(defined(<$fd>));
 
-    $w->cancel;
+    $w->stop;
 
     @clients = grep { $_ != $fd } @clients;
+    @watchers = grep { $_ != $w } @watchers;
 
     $main::logger->info('Connection closed: ' . $fd->peerhost());
     close($fd);
