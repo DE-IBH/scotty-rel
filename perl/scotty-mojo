@@ -29,9 +29,9 @@ use Mojo::IOLoop;;
 use Getopt::Std;
 use JSON;
 
-our $opt_p = 0;
-getopt('p');
-my $port = $opt_p ? $opt_p : 3000;
+our $opt_p = 8020;
+our $opt_l = undef;
+getopt('pl');
 
 get '/' => sub {
   my $self = shift;
@@ -40,7 +40,7 @@ get '/' => sub {
 
 my $daemon = Mojo::Server::Daemon->new(
     app    => app,
-    listen => ["http://*:$port"]
+    listen => ['http://'.($opt_l ? $opt_l : '*').":$opt_p"]
 );
 
 websocket '/ws' => sub {
