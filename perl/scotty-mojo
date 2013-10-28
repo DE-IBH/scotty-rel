@@ -28,6 +28,8 @@ use Mojolicious::Lite;
 use Mojo::IOLoop;;
 use Getopt::Std;
 use JSON;
+use strict;
+use warnings;
 
 our $opt_p = 8020;
 our $opt_l = undef;
