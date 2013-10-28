@@ -31,6 +31,8 @@ use JSON;
 use strict;
 use warnings;
 
+$0 = 'scotty-mojo';
+
 our $opt_p = 8020;
 our $opt_l = undef;
 getopt('pl');
