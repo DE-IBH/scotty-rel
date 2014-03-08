@@ -6,7 +6,7 @@
 #   Thomas Liske <thomas@fiasko-nw.net>
 #
 # Copyright Holder:
-#   2012 - 2013 (C) Thomas Liske [http://fiasko-nw.net/~thomas/]
+#   2012 - 2014 (C) Thomas Liske [http://fiasko-nw.net/~thomas/]
 #
 # License:
 #   This program is free software; you can redistribute it and/or modify
@@ -24,18 +24,19 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 #
 
-paths=${1:-/etc/scotty-rel/paths.conf}
-. "$paths"
+. ${1:-/etc/scotty-rel/paths.conf}
 
-echo "Creating views.xml..."
-"$LIBDIR/mkservices" "$paths"
+function err {
+    logger -s -t scotty-rel -- "Configuration error: $@"
+    exit 1
+}
 
-echo "Creating hosts.xml..."
-"$LIBDIR/mkhosts" "$paths"
+S2HFN=`tempfile -p s2h -s xml`
+if [ ! -e "$CFGDIR/views.xml" ]; then
+    rm "$S2HFN"
+    err views.xml not found "($CFGDIR/views.xml)"
+fi
 
-echo "Creating HTML files..."
-for tpl in $TPLDIR/*.tpl; do
-    html=`basename "${tpl%tpl}html"`
-    echo " $html"
-    "$LIBDIR/mkindex" "$tpl" "$WWWDIR/$html" "$VIEWSDIR"
-done
+xsltproc -o "$S2HFN" "$XSLDIR/views2hosts.xsl" "$CFGDIR/views.xml" || err xsltproc processing failed on $CFGDIR/views.xml
+
+perl -nMSocket -e 'while(/##([^<#]+)##/) {$h=inet_ntoa(inet_aton($1)); s/##$1##/$h/g;} print;' < "$S2HFN" > "$CFGDIR/hosts.xml.new" || err could not create views configuration
