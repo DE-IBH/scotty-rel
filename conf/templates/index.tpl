@@ -23,7 +23,8 @@ Author:
   Thomas Liske &lt;<a href="mailto:thomas@fiasko-nw.net">thomas@fiasko-nw.net</a>&gt;
 
 Copyright Holder:
-  2012 - 2013 (C) Thomas Liske [<a href="http://fiasko-nw.net/~thomas/">http://fiasko-nw.net/~thomas/</a>]
+  2012 - 2013 (C) Thomas Liske [https://fiasko-nw.net/~thomas/tag/scotty]
+  2014        (C) IBH IT-Service GmbH [http://www.ibh.de/OSS/Scotty]
 
 License:
   This program is free software; you can redistribute it and/or modify
