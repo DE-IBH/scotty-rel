@@ -10,6 +10,9 @@ a browser based user interface. The backend is implemented in Perl using
 the Mojolicious framework. The user interfaces uses HTML5 and JavaScript
 technologies based on jQuery and some additional jQuery plugins.
 
+**This repository is *obsolete* and only kept for the records. It has been superseded by [SNMD - Simple Network Monitoring Dashboard](https://github.com/DE-IBH/snmd/)!**
+
+
 Install
 -------
 
